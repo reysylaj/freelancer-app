@@ -1,0 +1,81 @@
+.received-proposals-container {
+    background-color: white;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.received-proposals-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.no-proposals {
+    text-align: center;
+    color: gray;
+}
+
+/* Proposal Card */
+.proposal-card {
+    background: #1e1e1e;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+}
+
+/* Proposal Header */
+.proposal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.talent-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.proposal-date {
+    font-size: 12px;
+    color: gray;
+}
+
+/* Proposal Actions */
+.proposal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.accept-button {
+    background-color: green;
+    color: white;
+}
+
+.reject-button {
+    background-color: red;
+    color: white;
+}
+
+/* Status Styling */
+.proposal-status {
+    font-weight: bold;
+}
+
+.proposal-status.Accepted {
+    color: green;
+}
+
+.proposal-status.Rejected {
+    color: red;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

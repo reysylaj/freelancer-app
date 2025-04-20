@@ -1,0 +1,41 @@
+/* ProfileClientTestimonials.css */
+.testimonials-container {
+    background-color: #121212;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: white;
+}
+
+.testimonials-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.testimonial-card {
+    background: #1e1e1e;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.review-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.review-text {
+    font-size: 14px;
+    color: #ddd;
+    text-align: left;
+}

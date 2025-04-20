@@ -1,0 +1,116 @@
+/* 📌 Ensure Full Screen Background */
+.profile-client-header {
+    width: 100%;
+    /* ✅ Full viewport width */
+    max-width: 100%;
+    background-color: white;
+    color: black;
+    text-align: center;
+    padding-bottom: 20px;
+    overflow: hidden;
+    /* ✅ Prevent extra scrollbars */
+}
+
+/* 📸 Cover Image - TRUE Full Width & Height */
+.cover-container {
+    position: relative;
+    width: 100%;
+    /* ✅ Full viewport width */
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ✅ Force the Cover Image to Fill the Entire Space */
+.cover-image {
+    width: 100 ;
+    /* ✅ Force it to cover full screen */
+    max-width: 100;
+    height: 100% !important;
+    object-fit: cover;
+    /* ✅ Ensures it fills without distortion */
+    display: block;
+}
+
+/* 🎛️ Cover Image Actions */
+.cover-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.edit-cover-btn,
+.delete-cover-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+/* 🏆 Profile Info */
+.profile-info {
+    margin-top: -90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 👤 Profile Avatar */
+.avatar-container {
+    position: relative;
+}
+
+.profile-avatar {
+    width: 130px;
+    height: 130px;
+    border: 4px solid white;
+}
+
+/* 🎛️ Avatar Actions */
+.avatar-actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    gap: 5px;
+}
+
+.edit-avatar-btn,
+.delete-avatar-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+/* 🔹 User Details */
+.details-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.details-container a {
+    color: darkblue;
+    text-decoration: none;
+}
+
+.details-container a:hover {
+    text-decoration: underline;
+}
+
+/* ✏️ Edit Button */
+.edit-btn {
+    margin-top: 5px;
+    color: black;
+}
+
+/* 📌 Jobs Posted */
+.jobs-posted {
+    margin-top: 15px;
+    background: red;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+}

@@ -1,0 +1,67 @@
+.create-post-container {
+    background: #121212;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+.post-input-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #1d1d1d;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.post-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.post-text-field {
+    background: #1d1d1d;
+    color: white;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.post-action-button {
+    color: white;
+    text-transform: none;
+}
+
+.post-dialog {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post-textarea {
+    margin-top: 10px;
+}
+
+.post-preview {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.post-submit-button {
+    background: teal;
+    color: white;
+}
+
+.post-submit-button:hover {
+    background: darkcyan;
+}

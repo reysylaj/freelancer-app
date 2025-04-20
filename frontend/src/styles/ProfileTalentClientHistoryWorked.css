@@ -1,0 +1,95 @@
+.client-history-container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background-color: #1c1c1c;
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Clients List */
+.clients-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Client Card */
+.client-card {
+    background: #282828;
+    padding: 15px;
+    border-radius: 10px;
+    width: 260px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.client-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Ongoing Work Highlight */
+.client-card.ongoing {
+    border: 2px solid orange;
+}
+
+/* Avatar */
+.client-avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+/* Client Name */
+.client-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Position & Payment */
+.client-position,
+.client-payment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.icon {
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+/* Rating */
+.client-rating {
+    margin-top: 8px;
+}
+
+.star-icon {
+    color: gold;
+    font-size: 18px;
+}
+
+/* Ongoing Work Button */
+.ongoing-button {
+    background-color: orange !important;
+    color: black !important;
+    font-weight: bold !important;
+    margin-top: 10px !important;
+}

@@ -1,0 +1,41 @@
+/* ProfileClientEarningsDashboard.css */
+.earnings-dashboard-container {
+    background-color: #121212;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: white;
+}
+
+.dashboard-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    background-color: #00c4ff;
+    color: white;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.filter-buttons button.active {
+    background-color: #0088cc;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}

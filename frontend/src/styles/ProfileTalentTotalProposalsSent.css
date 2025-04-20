@@ -1,0 +1,70 @@
+.proposals-container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background-color: #1c1c1c;
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+.total-proposals {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* Dropdown */
+.filter-dropdown {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Table */
+.proposals-table {
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.proposals-table th {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+}
+
+.proposals-table td {
+    padding: 12px;
+}
+
+/* Proposal Row Colors */
+.proposal-row.pending .status-cell {
+    color: orange;
+    font-weight: bold;
+}
+
+.proposal-row.accepted .status-cell {
+    color: green;
+    font-weight: bold;
+}
+
+.proposal-row.rejected .status-cell {
+    color: red;
+    font-weight: bold;
+}
+
+.no-data {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: gray;
+}

@@ -1,0 +1,74 @@
+/* General page layout */
+.client-profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #121212;
+    /* Dark background */
+    color: white;
+    padding-bottom: 50px;
+}
+
+/* Sections inside the profile */
+.client-profile-section {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px 0;
+    background: #1e1e1e;
+    /* Slightly lighter background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Profile Header Section */
+.client-profile-header {
+    width: 100%;
+    text-align: center;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+/* Profile components alignment */
+.client-profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Grid layout for multiple sections */
+.client-profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Single full-width section */
+.client-profile-full-width {
+    width: 100%;
+}
+
+/* Adjust for mobile responsiveness */
+@media (max-width: 900px) {
+    .client-profile-grid {
+        grid-template-columns: 1fr;
+        /* Stack elements vertically */
+    }
+}
+
+.create-job-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.create-job-button-container button {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+}

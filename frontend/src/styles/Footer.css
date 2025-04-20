@@ -1,0 +1,98 @@
+/* Footer Container */
+.footer-container {
+    background-color: black;
+    padding: 40px 0;
+    width: 100%;
+    color: white;
+}
+
+
+/* Footer Main Content */
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+/* Logo Styling */
+.footer-logo img {
+    height: 80px;
+}
+
+/* Text Columns */
+.footer-text {
+    max-width: 250px;
+    text-align: left;
+    color: white !important
+}
+
+/* Social Media Section */
+.footer-social {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.follow-text {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+}
+
+/* Social Media Icons */
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    font-size: 30px !important;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
+    color: red;
+    /* Highlight Color */
+}
+
+/* Copyright Section */
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    /* Adjust height if needed */
+    margin-top: 20px;
+    /* Space from the main footer */
+    text-align: center;
+    position: relative;
+    color: white;
+}
+
+/*positioning in the bottom the footer without gaps*/
+/* Wrapper to control layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 20000vh;
+    /* Full viewport height */
+}
+
+/* Main content should push the footer down */
+.content {
+    flex-grow: 1;
+}
+
+/* Footer Styling */
+.footer {
+    width: 100%;
+    text-align: center;
+    position: relative;
+}

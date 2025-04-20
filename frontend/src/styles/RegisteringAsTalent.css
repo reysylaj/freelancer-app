@@ -1,0 +1,25 @@
+/* Align icon under the title */
+.icon-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+/* Info Button positioning (Bottom Right of the card) */
+.card-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.info-button {
+    background-color: white;
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.info-button:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}

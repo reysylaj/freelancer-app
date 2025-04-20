@@ -1,0 +1,33 @@
+/* ClientProfilePopupViewCreatedPost.css */
+
+.client-popup-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+}
+
+/* Styling for text fields */
+.client-popup-content .MuiTypography-root {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Bold Labels */
+.client-popup-content strong {
+    color: #555;
+}
+
+/* Dialog Title Styling */
+.client-popup-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+}
+
+/* Dialog Actions */
+.client-popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}

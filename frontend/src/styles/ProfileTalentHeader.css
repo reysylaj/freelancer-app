@@ -1,0 +1,32 @@
+/* ✅ Make the entire header full width */
+.profile-header {
+    max-width: 100%;
+    max-width: 100%;
+    background-color: white !important;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+/* ✅ Ensure the cover container spans full width */
+.cover-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+/* ✅ Make sure the cover image is fully stretched */
+.cover-image {
+    width: 97.3% !important;
+    max-width: 97.3% !important;
+    /* ✅ Force max-width */
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-header,
+.cover-container {
+    width: 97.3% !important;
+    max-width: 97.3% !important;
+}

@@ -1,0 +1,49 @@
+/* 🔹 Main Container */
+.saved-projects-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 Title */
+.saved-projects-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 🔹 No Projects Message */
+.no-projects {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+}
+
+/* 🔹 Cards */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+/* 🔹 Individual Project Card */
+.saved-project-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 Buttons */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}

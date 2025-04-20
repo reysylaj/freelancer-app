@@ -1,0 +1,99 @@
+.client-history-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.client-history-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.client-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.client-card {
+    display: flex;
+    align-items: center;
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+    text-align: left;
+}
+
+.client-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.client-avatar {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+}
+
+.client-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.client-position {
+    font-size: 14px;
+    color: #777;
+}
+
+.client-status {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* Status and Payment Chips */
+.status-chip {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    padding: 5px 8px !important;
+}
+
+.status-chip.completed {
+    background-color: green !important;
+    color: white !important;
+}
+
+.status-chip.ongoing {
+    background-color: orange !important;
+    color: white !important;
+}
+
+.payment-chip {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    padding: 5px 8px !important;
+}
+
+.payment-chip.paid {
+    background-color: blue !important;
+    color: white !important;
+}
+
+.payment-chip.pending {
+    background-color: red !important;
+    color: white !important;
+}
+
+.client-rating {
+    margin-top: 10px;
+}

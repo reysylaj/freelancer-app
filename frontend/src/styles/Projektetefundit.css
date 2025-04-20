@@ -1,0 +1,66 @@
+/* 📌 Main Container */
+.projektetefundit-container {
+    padding-top: 50px;
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 90px;
+}
+
+/* 🔝 Title */
+.projektet-fundit-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.projektet-fundit-title .projektet-h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.projektet-fundit-title .projektet-p1 {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+    margin-bottom: 90px;
+}
+
+/* 📌 Filters + Project Layout */
+.content-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* 🎛️ Filters Sidebar (Left) */
+.filters-container {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* 📌 Projects List (Right) */
+.projects-container {
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+/* 🎨 Project Card */
+.project-card {
+    max-width: 345px;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}

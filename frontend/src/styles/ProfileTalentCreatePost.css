@@ -1,0 +1,32 @@
+.create-post-container {
+    background: #ffffff !important;
+    /* ✅ Force White Background */
+    width: 100% !important;
+    /* ✅ Full Width */
+    /* ✅ Full Height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* ✅ Center Content */
+    align-items: center;
+}
+
+/* 🔹 Ensure the post box aligns properly */
+.post-input-box {
+    width: 100%;
+    max-width: 900px;
+    /* ✅ Optional: Limit max width */
+    background: darkred;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* 🔹 Ensure the input box stays inside */
+.post-text-field {
+    flex-grow: 1;
+    color: white;
+    font-size: 16px;
+}

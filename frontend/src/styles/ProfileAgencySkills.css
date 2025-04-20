@@ -1,0 +1,58 @@
+.agency-skills-container {
+    background: #121212;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    color: white;
+    margin-top: 20px;
+}
+
+.skills-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.about-textfield {
+    margin-top: 10px;
+    background: white;
+    border-radius: 5px;
+}
+
+.about-text {
+    font-size: 16px;
+    color: #b0b0b0;
+    margin-top: 10px;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.skill-chip {
+    background-color: teal !important;
+    color: white !important;
+}
+
+.add-skill-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.skill-input {
+    flex-grow: 1;
+}
+
+.add-skill-button {
+    background: teal;
+    color: white;
+    font-weight: bold;
+}
+
+.add-skill-button:hover {
+    background: darkcyan;
+}

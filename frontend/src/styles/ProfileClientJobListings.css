@@ -1,0 +1,85 @@
+/* 📌 Container */
+.job-listings-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* 🔝 Title */
+.job-listings-container h5 {
+    color: black;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* 🎨 Cards Row */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 columns */
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    justify-content: center;
+}
+
+/* 📌 Individual Job Card */
+.job-card {
+    background: #f9f9f9;
+    color: black;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+    flex: 1;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 📝 Job Title */
+.job-card h6 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+}
+
+/* 💰 Budget */
+.job-card .job-budget {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #008000;
+    margin-top: 5px;
+}
+
+/* 🔘 Card Actions */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* 🎛️ Buttons */
+.card-actions button {
+    font-weight: bold;
+}
+
+/* 🔘 Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    color: darkred !important;
+    width: 100%;
+    position: relative;
+}

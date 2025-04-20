@@ -1,0 +1,78 @@
+.agency-proposals-container {
+    background: #121212;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+.agency-proposals-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.no-proposals {
+    color: gray;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.proposals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.proposal-card {
+    background: #1d1d1d !important;
+    color: white !important;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.proposal-card:hover {
+    transform: scale(1.02);
+}
+
+.proposal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.proposal-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.proposal-text {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.proposal-status {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Status Colors */
+.proposal-status.pending {
+    background-color: orange !important;
+    color: black !important;
+}
+
+.proposal-status.accepted {
+    background-color: green !important;
+    color: white !important;
+}
+
+.proposal-status.rejected {
+    background-color: red !important;
+    color: white !important;
+}

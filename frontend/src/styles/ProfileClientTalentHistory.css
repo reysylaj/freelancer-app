@@ -1,0 +1,59 @@
+.talent-history-container {
+    background-color: #121212;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.talent-history-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.no-history {
+    text-align: center;
+    color: gray;
+}
+
+/* Talent Card */
+.talent-card {
+    background: #1e1e1e;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+    margin: 10px;
+    text-align: center;
+}
+
+/* Talent Header */
+.talent-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.talent-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.talent-skill {
+    font-size: 14px;
+    color: gray;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+/* Slider */
+.slick-slide>div {
+    display: flex;
+    justify-content: center;
+}

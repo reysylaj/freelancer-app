@@ -1,0 +1,68 @@
+.create-job-container {
+    background-color: #121212;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* Job Input Box */
+.job-input-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.job-avatar {
+    margin-right: 10px;
+}
+
+.job-text-field {
+    background: transparent;
+    color: white;
+}
+
+/* Job Modal */
+.job-dialog {
+    backdrop-filter: blur(5px);
+}
+
+.job-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.job-modal-avatar {
+    margin-right: 10px;
+}
+
+.job-title-input,
+.job-description-input,
+.job-budget-input {
+    margin-bottom: 10px;
+}
+
+.job-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.job-action-button {
+    color: #00bcd4;
+    font-weight: bold;
+}
+
+.job-submit-button {
+    background-color: #00bcd4;
+    color: white;
+    font-weight: bold;
+}
+
+.job-submit-button:hover {
+    background-color: #008ba3;
+}

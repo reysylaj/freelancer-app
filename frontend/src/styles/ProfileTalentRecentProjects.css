@@ -1,0 +1,165 @@
+/* 📌 Main Container */
+.received-proposals-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* 🔝 Title */
+.received-proposals-title {
+    color: black;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* 📌 Grid Layout for Proposals */
+.received-proposals-container .MuiGrid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* 📌 Individual Proposal Card */
+.proposal-card {
+    background: #f9f9f9;
+    color: black;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+    flex: 1;
+}
+
+.proposal-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 📌 Card Content */
+.proposal-card .MuiCardContent-root {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 📌 Avatar */
+.proposal-card .MuiAvatar-root {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+/* 📌 Talent Name */
+.proposal-card .MuiTypography-h6 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 📌 Cover Letter Preview */
+.proposal-card .MuiTypography-body2 {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* 📌 View Button */
+.proposal-card .MuiButton-root {
+    background-color: #1976d2;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    text-transform: none;
+}
+
+.proposal-card .MuiButton-root:hover {
+    background-color: #145a9e;
+}
+
+/* 🔘 Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    color: darkred;
+}
+
+.num-pag {
+    color: darkred;
+}
+
+/* 📌 Responsive Adjustments */
+@media (max-width: 768px) {
+    .received-proposals-container {
+        padding: 10px;
+    }
+
+    .received-proposals-container .MuiGrid-container {
+        justify-content: center;
+    }
+
+    .proposal-card {
+        max-width: 100%;
+    }
+}
+
+
+/*Filters on the centre */
+.filter-input {
+    background-color: white;
+    display: flex;
+    gap: 1rem;
+    /* space between input and dropdown */
+    flex: 1;
+    /* both take equal width */
+    min-width: 0;
+    /* prevents overflowing in some cases */
+}
+
+/* 📌 Cards Flex Layout: 4 per row */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 📌 Individual Post Card: Max 4 per row */
+.post-card {
+    /* ✅ 4 per row, accounting for gap */
+    background: #f9f9f9;
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+
+.pagination-controls .MuiPaginationItem-root {
+    color: darkred;
+    border-color: darkred;
+}
+
+.pagination-controls .Mui-selected {
+    background-color: darkred !important;
+    color: white !important;
+}

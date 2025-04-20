@@ -1,0 +1,98 @@
+/* 📌 Main Container */
+.punetefundit-container {
+    padding-top: 50px;
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 90px;
+}
+
+/* 🔝 Search & Sort in the Same Row */
+.search-sort-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    /* Ensure they stay in one row */
+}
+
+.search-sort-container .MuiTextField-root,
+.search-sort-container .MuiFormControl-root {
+    flex: 1;
+    /* Equal width */
+    max-width: 400px;
+    /* Set a max width to prevent excessive stretching */
+}
+
+/* 📌 Sidebar Filters & Job Listings */
+.content-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* 🎛️ Filters Sidebar */
+.filters-container {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    color: #000;
+}
+
+
+/* 📌 Jobs List */
+.jobs-container {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* 3 per row when enough space */
+    gap: 50px;
+}
+
+.job-card {
+    border-radius: 8px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+/*P1 dhe H1 ne punet-fundit-title */
+.punet-fundit-title .punet-h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.punet-fundit-title .punet-p1 {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+    margin-bottom: 90px;
+}
+
+.punet-fundit-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* 🔹 Like Button Container */
+.like-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}

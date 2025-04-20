@@ -1,0 +1,103 @@
+/* 📌 Full-Screen Container */
+.saved-jobs-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* 🔝 Title */
+.saved-jobs-title {
+    color: black;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* 🎛️ Cards Layout */
+.cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 1400px;
+    flex-wrap: wrap;
+}
+
+/* 📌 Individual Card */
+.saved-job-card {
+    background: #f9f9f9;
+    color: black;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+    flex: 1;
+}
+
+.saved-job-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 👤 User Info */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* 📌 Job Title */
+.job-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* 📌 Job Budget */
+.job-budget {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 5px;
+}
+
+/* 📌 Job Work Mode & Type */
+.job-details {
+    font-size: 0.95rem;
+    color: #333;
+    margin-top: 2px;
+}
+
+/* 📌 Job Description */
+.job-description {
+    font-size: 1rem;
+    margin-top: 10px;
+    line-height: 1.5;
+    color: #666;
+}
+
+/* 🔘 Remove Button */
+.card-actions {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.card-actions button {
+    color: red !important;
+    font-weight: bold;
+}
+
+/* 🔘 Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    color: darkred;
+}

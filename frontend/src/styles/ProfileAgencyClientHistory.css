@@ -1,0 +1,73 @@
+.agency-client-history-container {
+    background: #121212;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+.agency-client-history-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.no-clients {
+    color: gray;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.client-history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.client-card {
+    background: #1d1d1d !important;
+    color: white !important;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    padding: 15px;
+}
+
+.client-card:hover {
+    transform: scale(1.02);
+}
+
+.client-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.client-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.client-role {
+    font-size: 14px;
+    color: lightgray;
+}
+
+.project-description,
+.project-duration,
+.client-feedback {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.rating-star {
+    color: gold;
+}

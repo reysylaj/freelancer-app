@@ -1,0 +1,39 @@
+.earnings-container {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #1c1c1c;
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.earnings-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Filter Dropdown */
+.filter-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Earnings Chart */
+.earnings-chart {
+    width: 100%;
+    height: 300px;
+}
+
+/* Total Earnings */
+.total-earnings {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: red;
+}

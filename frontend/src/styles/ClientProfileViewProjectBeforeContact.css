@@ -1,0 +1,11 @@
+.message-button {
+    background-color: #1976d2 !important;
+    color: white !important;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.message-button:hover {
+    background-color: #1565c0 !important;
+}
