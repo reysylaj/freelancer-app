@@ -1,4 +1,3 @@
-// ✅ Punetefundit.jsx - FINAL VERSION CONNECTED TO BACKEND
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -64,15 +63,20 @@ const Punetefundit = () => {
       const jobsFromBackend = await getAllJobs();
       setJobs(jobsFromBackend);
 
-      const saved = await getSavedJobs(talentId);
-      setSavedJobs(saved);
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser && storedUser.role === "talent") {
+        const saved = await getSavedJobs(); // ✅ Only fetch if talent
+        setSavedJobs(saved);
 
-      const storedLikedJobs = JSON.parse(localStorage.getItem("likedTalentJobs")) || [];
-      const userLikedJobs = storedLikedJobs.filter(job => job.talentId === talentId);
-      setLikedJobs(userLikedJobs);
+        const storedLikedJobs = JSON.parse(localStorage.getItem("likedTalentJobs")) || [];
+        const userLikedJobs = storedLikedJobs.filter(job => job.talentId === storedUser.id);
+        setLikedJobs(userLikedJobs);
+      } else {
+        setSavedJobs([]); // 👈 or skip it
+      }
+
     } catch (error) {
       console.error("❌ Failed to load jobs:", error);
-      alert("Nuk u ngarkuan dot punët nga serveri!");
     }
   };
 
@@ -98,26 +102,21 @@ const Punetefundit = () => {
 
   const handleSaveJob = async (job) => {
     try {
-      const alreadySaved = savedJobs.find(j => j.jobId === job.id && j.talentId === talentId);
+      const alreadySaved = savedJobs.find(j => j.jobId === job.id);
 
       if (alreadySaved) {
         await removeSavedJobFromBackend(alreadySaved.id);
         const updated = savedJobs.filter(j => j.jobId !== job.id);
         setSavedJobs(updated);
-        window.dispatchEvent(new Event("savedJobsUpdated")); // 👈 notify others
+        window.dispatchEvent(new Event("savedJobsUpdated"));
       } else {
-        const newSaved = await saveJobToBackend({
-          jobId: job.id,
-          jobTitle: job.title,
-          talentId,
-          savedAt: new Date(),
-        });
+        const newSaved = await saveJobToBackend({ jobId: job.id });
         const updated = [...savedJobs, newSaved];
         setSavedJobs(updated);
-        window.dispatchEvent(new Event("savedJobsUpdated")); // 👈 notify others
+        window.dispatchEvent(new Event("savedJobsUpdated"));
       }
     } catch (error) {
-      console.error("Error saving job:", error);
+      console.error("❌ Error saving job:", error.response?.data || error.message);
     }
   };
 

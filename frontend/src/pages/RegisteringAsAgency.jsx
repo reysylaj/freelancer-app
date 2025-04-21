@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx"; // ✅ Import AuthContext
+import { useAuth } from "../context/AuthContext.jsx"; // ✅ Import AuthContext
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const RegisteringAsAgency = () => {
-    const { loginUser } = useContext(AuthContext);
+    const { login, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const selectedCategory = location.state?.category || "Nuk u përzgjodh kategori";

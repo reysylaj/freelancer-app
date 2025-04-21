@@ -15,11 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobsController = void 0;
 const common_1 = require("@nestjs/common");
 const jobs_service_1 = require("./jobs.service");
+const create_job_dto_1 = require("./dto/create-job.dto");
 let JobsController = class JobsController {
     constructor(jobsService) {
         this.jobsService = jobsService;
     }
     create(job) {
+        console.log('Incoming Job:', job);
         return this.jobsService.create(job);
     }
     findAll() {
@@ -40,35 +42,35 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_job_dto_1.CreateJobDto]),
+    __metadata("design:returntype", Promise)
 ], JobsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('client/:clientId'),
     __param(0, (0, common_1.Param)('clientId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobsController.prototype, "findByClient", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobsController.prototype, "delete", null);
 exports.JobsController = JobsController = __decorate([
     (0, common_1.Controller)('jobs'),

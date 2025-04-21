@@ -1,16 +1,7 @@
-// ✅ ProfileClientReceivedProposals.jsx - UPDATED TO BACKEND
 import { useState, useEffect } from "react";
-import {
-    Box,
-    Typography,
-    Card,
-    CardContent,
-    Avatar,
-    Button,
-    Pagination,
-    Stack
-} from "@mui/material";
+import { Box, Typography, Card, CardContent, Avatar, Button, Pagination, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // ✅ new import
 import ClientProposalListPopup from "./ClientProposalListPopup";
 import { getProposalsByClient, updateProposalStatus as updateStatusBackend } from "../services/proposalService";
 import "../styles/ProfileClientReceivedProposals.css";
@@ -18,8 +9,8 @@ import "../styles/ProfileClientReceivedProposals.css";
 const ITEMS_PER_PAGE = 4;
 
 const ProfileClientReceivedProposals = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const clientId = storedUser.id;
+    const { authUser } = useAuth(); // ✅ use the context
+    const clientId = authUser?.id; // ✅ instead of localStorage
     const navigate = useNavigate();
 
     const [proposals, setProposals] = useState([]);
@@ -31,6 +22,7 @@ const ProfileClientReceivedProposals = () => {
     useEffect(() => {
         const loadProposals = async () => {
             try {
+                if (!clientId) return;
                 const clientProposals = await getProposalsByClient(clientId);
                 setProposals(clientProposals);
                 updatePaginated(clientProposals, 1);
@@ -76,7 +68,7 @@ const ProfileClientReceivedProposals = () => {
     };
 
     const handleViewTalentProfile = (talentId) => {
-        navigate(`/view-talent-profile/${talentId}`);
+        navigate(`/view-talent-profile/${proposal.talentId}`);
     };
 
     return (

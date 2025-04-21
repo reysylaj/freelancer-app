@@ -1,4 +1,3 @@
-// ✅ ProfileTalentTotalProposalsSent.jsx - UPDATED
 import { useState, useEffect } from "react";
 import {
     Box,

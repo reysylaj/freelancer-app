@@ -9,7 +9,7 @@ export class ProjectsService {
     constructor(
         @InjectRepository(Project)
         private readonly repo: Repository<Project>,
-    ) { }
+    ) { } 
 
     create(project: Partial<Project>) {
         const newProject = this.repo.create(project);

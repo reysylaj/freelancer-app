@@ -1,28 +1,75 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
+import {
+    registerUser,
+    loginUser,
+    logoutUser,
+    getCurrentUser
+} from '../services/authService';
+import API from '../services/api';
 
-// Create Context
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-// AuthProvider Component
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem("loggedInUser");
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+    const [authUser, setAuthUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const loginUser = (userData) => {
-        setUser(userData);
-        localStorage.setItem("loggedInUser", JSON.stringify(userData)); // ✅ Store only logged-in user
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const res = await API.get("/auth/profile", { withCredentials: true });
+                setAuthUser(res.data);
+                localStorage.setItem("user", JSON.stringify(res.data));
+            } catch (err) {
+                setAuthUser(null);
+                localStorage.removeItem("user");
+            } finally {
+                setLoading(false); // ✅ This was missing!
+            }
+        };
+        checkSession();
+    }, []);
+
+    const register = async (formData) => {
+        try {
+            const response = await registerUser(formData);
+            setAuthUser(response.data);
+            localStorage.setItem("user", JSON.stringify(response.data));
+            return response.data;
+        } catch (error) {
+            console.error("❌ Register failed:", error.response?.data || error.message);
+            alert(
+                error.response?.data?.message?.join('\n') ||
+                error.response?.data?.message ||
+                "Registration failed"
+            );
+            throw error;
+        }
     };
 
-    const logoutUser = () => {
-        setUser(null);
-        localStorage.removeItem("loggedInUser"); // ✅ Only remove session user, not all users
+    const login = async (formData) => {
+        try {
+            const response = await loginUser(formData);
+            setAuthUser(response.data);
+            localStorage.setItem("user", JSON.stringify(response.data));
+            return response.data;
+        } catch (error) {
+            console.error("❌ Login failed:", error.response?.data || error.message);
+            throw error;
+        }
+    };
+
+    const logout = async () => {
+        await logoutUser();
+        localStorage.removeItem("user");
+        localStorage.removeItem("talentProfileData");
+        setAuthUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, loginUser, logoutUser }}>
+        <AuthContext.Provider value={{ authUser, loading, register, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export const useAuth = () => useContext(AuthContext);

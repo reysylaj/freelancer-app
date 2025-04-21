@@ -1,3 +1,4 @@
+//jobService.js
 import API from "./api"; // Axios instance
 
 export const createJob = async (jobData) => {
@@ -18,4 +19,9 @@ export const getJobById = async (id) => {
 export const getJobsByClientId = async (clientId) => {
     const response = await API.get(`/jobs/client/${clientId}`);
     return response.data;
+};
+
+export const deleteJob = async (id) => {
+    const res = await API.delete(`/jobs/${id}`, { withCredentials: true });
+    return res.data;
 };

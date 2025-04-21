@@ -1,14 +1,13 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import API from "../services/api"; // ✅ Axios API
 import "../styles/LoginPage.css";
 
 const Login = () => {
-    const { loginUser } = useContext(AuthContext);
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -22,40 +21,24 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const { data: allUsers } = await API.get("/users");
+            const user = await login(formData); // ✅ use backend login
 
-            const userData = allUsers.find(
-                (user) => user.email === formData.email && user.password === formData.password
-            );
-
-            if (userData) {
-                // 🔄 Clear existing sessions
-                localStorage.removeItem("user");
-                localStorage.removeItem("talentId");
-                localStorage.removeItem("clientId");
-                localStorage.removeItem("loggedInUser");
-                localStorage.removeItem("talentProfileData");
-                
-                // 💾 Save current session
-                localStorage.setItem("user", JSON.stringify(userData));
-                if (userData.role === "client") localStorage.setItem("clientId", userData.id);
-                if (userData.role === "talent") localStorage.setItem("talentId", userData.id);
-
-                loginUser(userData);
-
-                if (userData.role === "client") {
-                    navigate(`/client-profile/${userData.id}`);
-                } else if (userData.role === "talent") {
-                    navigate(`/talent-profile/${userData.id}`);
-                } else if (userData.role === "agency") {
-                    navigate("/agency-profile");
-                }
-            } else {
+            if (!user) {
                 setError("Email ose fjalëkalimi i pasaktë!");
+                return;
+            }
+
+            // Optional: route based on role
+            if (user.role === "client") {
+                navigate(`/client-profile/${user.id}`);
+            } else if (user.role === "talent") {
+                navigate(`/talent-profile/${user.id}`);
+            } else if (user.role === "agency") {
+                navigate("/agency-profile");
             }
         } catch (err) {
             console.error("Login error:", err);
-            setError("Dështoi lidhja me serverin.");
+            setError("Dështoi lidhja me serverin ose kredencialet janë të pasakta.");
         }
     };
 

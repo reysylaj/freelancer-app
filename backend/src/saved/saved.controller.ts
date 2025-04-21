@@ -1,28 +1,72 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Param, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { SavedService } from './saved.service';
-import { Saved } from './saved.entity';
+import { AuthGuard } from '../auth/auth.guard';
+import { RequestWithUser } from '../auth/interfaces/request-with-user';
+
 
 @Controller('saved')
 export class SavedController {
     constructor(private readonly savedService: SavedService) { }
 
-    @Post()
-    create(@Body() data: Partial<Saved>) {
-        return this.savedService.create(data);
+    // 🔹 Save a job (TALENT)
+    @UseGuards(AuthGuard)
+    @Post('job')
+    async saveJob(@Req() req: RequestWithUser, @Body() body: { jobId: number }) {
+        if (!req.user) throw new UnauthorizedException();
+        return this.savedService.saveJob({
+            talentId: req.user.id,
+            jobId: body.jobId,
+            savedAt: new Date(),
+        });
     }
 
-    @Get()
-    findAll(): Promise<Saved[]> {
-        return this.savedService.findAll();
+    // 🔹 Save a project (CLIENT)
+    @UseGuards(AuthGuard)
+    @Post('project')
+    async saveProject(@Req() req: RequestWithUser, @Body() body: any) {
+        if (!req.user) throw new UnauthorizedException();
+        return this.savedService.saveProject({
+            clientId: req.user.id,
+            projectId: body.projectId,
+            savedAt: new Date(),
+        });
     }
 
-    @Get('talent/:talentId')
-    findByTalentId(@Param('talentId') talentId: string) {
-        return this.savedService.findByTalentId(Number(talentId));
+    // 🔹 Get saved jobs for talent
+    @UseGuards(AuthGuard)
+    @Get('job')
+    async getSavedJobs(@Req() req: RequestWithUser) {
+        if (!req.user) throw new UnauthorizedException();
+        return this.savedService.getSavedJobsByTalent(req.user.id);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.savedService.remove(Number(id));
+    // 🔹 Get saved projects for client
+    @UseGuards(AuthGuard)
+    @Get('project')
+    async getSavedProjects(@Req() req: RequestWithUser) {
+        if (!req.user) throw new UnauthorizedException();
+        return this.savedService.getSavedProjectsByClient(req.user.id);
     }
+
+    // 🔹 Remove saved job
+    @UseGuards(AuthGuard)
+    @Delete('job/:id')
+    async deleteSavedJob(@Param('id') id: string) {
+        return this.savedService.removeSavedJob(Number(id));
+    }
+
+    // 🔹 Remove saved project
+    @UseGuards(AuthGuard)
+    @Delete('project/:id')
+    async deleteSavedProject(@Param('id') id: string) {
+        return this.savedService.removeSavedProject(Number(id));
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('client')
+    findByClient(@Req() req: RequestWithUser) {
+        if (!req.user) throw new UnauthorizedException();
+        return this.savedService.findByClientId(Number(req.user.id));
+    }
+
 }

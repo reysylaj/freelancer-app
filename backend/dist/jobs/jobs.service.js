@@ -21,21 +21,28 @@ let JobsService = class JobsService {
     constructor(jobRepo) {
         this.jobRepo = jobRepo;
     }
-    create(job) {
+    async create(job) {
         const newJob = this.jobRepo.create(job);
         return this.jobRepo.save(newJob);
     }
-    findAll() {
+    async findAll() {
         return this.jobRepo.find();
     }
-    findByClient(clientId) {
+    async findByClient(clientId) {
         return this.jobRepo.find({ where: { clientId } });
     }
-    findOne(id) {
-        return this.jobRepo.findOneBy({ id });
+    async findOne(id) {
+        const job = await this.jobRepo.findOneBy({ id });
+        if (!job) {
+            throw new common_1.NotFoundException(`Job with ID ${id} not found`);
+        }
+        return job;
     }
-    delete(id) {
-        return this.jobRepo.delete(id);
+    async delete(id) {
+        const result = await this.jobRepo.delete(id);
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException(`Job with ID ${id} not found`);
+        }
     }
 };
 exports.JobsService = JobsService;

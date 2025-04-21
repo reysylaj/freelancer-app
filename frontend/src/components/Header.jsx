@@ -1,12 +1,20 @@
-import { useContext } from "react";
+// import { useContext } from "react";
 import { AppBar, Toolbar, Box, Button } from "@mui/material";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
-import logo from "../assets/react.svg"; // ✅ Correct image path
-import "../styles/Header.css"; // ✅ Import external CSS
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // ✅ Use the custom hook instead of AuthContext
+import logo from "../assets/react.svg";
+import "../styles/Header.css";
 
 const Header = () => {
-    const { user, logoutUser } = useContext(AuthContext); // ✅ Get user data
+    const { authUser, logout } = useAuth(); // ✅ Updated context usage
+    console.log("💡 Logged in user:", authUser);
+
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/'); // or navigate('/login')
+    };
 
     return (
         <AppBar position="static" className="appbar">
@@ -28,26 +36,25 @@ const Header = () => {
                         Projektet e fundit
                     </Button>
 
-                    {/* ✅ Fix: Show correct name based on user role */}
-                    {user ? (
+                    {authUser ? (
                         <>
-                            {user.role === "client" && (
-                                <Button className="nav-button" component={Link} to={`/client-profile/${user.id}`}>
-                                    Hello, {user.name} {user.surname}
+                            {authUser.role === "client" && (
+                                <Button className="nav-button" component={Link} to={`/client-profile/${authUser.id}`}>
+                                    Hello, {authUser.name} {authUser.surname}
                                 </Button>
                             )}
-                            {user.role === "talent" && (
-                                <Button className="nav-button" component={Link} to={`/talent-profile/${user.id}`}>
-                                    Hello, {user.name} {user.surname}
+                            {authUser.role === "talent" && (
+                                <Button className="nav-button" component={Link} to={`/talent-profile/${authUser.id}`}>
+                                    Hello, {authUser.name} {authUser.surname}
                                 </Button>
                             )}
-                            {user.role === "agency" && (
-                                <Button className="nav-button" component={Link} to={`/agency-profile/${user.id}`}>
-                                    Hello, {user.agencyName}
+                            {authUser.role === "agency" && (
+                                <Button className="nav-button" component={Link} to={`/agency-profile/${authUser.id}`}>
+                                    Hello, {authUser.agencyName}
                                 </Button>
                             )}
 
-                            <Button className="nav-button" onClick={logoutUser}>
+                            <Button className="nav-button" onClick={handleLogout}>
                                 Logout
                             </Button>
                         </>

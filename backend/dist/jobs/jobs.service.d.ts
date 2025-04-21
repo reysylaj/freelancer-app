@@ -6,6 +6,6 @@ export declare class JobsService {
     create(job: Partial<Job>): Promise<Job>;
     findAll(): Promise<Job[]>;
     findByClient(clientId: number): Promise<Job[]>;
-    findOne(id: number): Promise<Job | null>;
-    delete(id: number): Promise<import("typeorm").DeleteResult>;
+    findOne(id: number): Promise<Job>;
+    delete(id: number): Promise<void>;
 }

@@ -2,13 +2,13 @@ import API from "../services/api";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/TalentSideRegistration.css";
 
 const TalentSideRegistration = () => {
-    const { loginUser } = useContext(AuthContext);
+    const { register, login, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const selectedCategory = location.state?.category || sessionStorage.getItem("selectedTalentCategory") || "Nuk ka kategori të zgjedhur";
@@ -48,27 +48,22 @@ const TalentSideRegistration = () => {
             role: "talent",
             category: selectedCategory,
             jobRole: formData.jobRole,
-            skills: "",
-            profilePicture: "",
+            //skills: "",
+            //profilePicture: ""
         };
 
+        console.log("📦 Sending this to backend:", newTalent);
+
         try {
-            const response = await API.post("/users", newTalent);
-            const savedTalent = response.data;
-
-            // 🧹 Clean old localStorage entries
-            localStorage.removeItem("loggedInUser");
-            localStorage.removeItem("talentProfileData");
-
-            // 💾 Save session
+            const savedTalent = await register(newTalent);
             localStorage.setItem("user", JSON.stringify(savedTalent));
-            localStorage.setItem("talentId", savedTalent.id);
-
-            loginUser(savedTalent);
             navigate(`/talent-profile/${savedTalent.id}`);
+
+
+
         } catch (error) {
-            console.error("❌ Failed to register talent:", error);
-            alert("Gabim gjatë regjistrimit të talentit!");
+            console.error("❌ Error registering:", error);
+            alert("Keto te dhena ekzistojne, logohu");
         }
     };
 

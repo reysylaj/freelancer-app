@@ -9,7 +9,7 @@ import PersonOffIcon from "@mui/icons-material/PersonOff";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import "../styles/RegisteringAsTalent.css";
+import "../styles/RegisteringAsTalent.css"; 
 
 const RegisteringAsTalent = () => {
     const [infoText, setInfoText] = useState("");

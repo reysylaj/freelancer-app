@@ -1,17 +1,16 @@
-import API from "../services/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx"; // ✅ Import AuthContext
+import { useAuth } from "../context/AuthContext.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import "../styles/ClientSideRegistration.css";
 
 const ClientSideRegistration = () => {
-    const { loginUser } = useContext(AuthContext);
+    const { register } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const selectedCategory = location.state?.category || "Nuk u përzgjodh kategori";
+    const selectedCategory = location.state?.category || sessionStorage.getItem("selectedClientCategory") || "General";
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -19,7 +18,14 @@ const ClientSideRegistration = () => {
         email: "",
         password: "",
         confirmPassword: "",
+        companyName: "",
     });
+
+    useEffect(() => {
+        if (!location.state?.category && !sessionStorage.getItem("selectedClientCategory")) {
+            sessionStorage.setItem("selectedClientCategory", "General");
+        }
+    }, [selectedCategory, location.state]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,29 +46,21 @@ const ClientSideRegistration = () => {
             password: formData.password,
             role: "client",
             category: selectedCategory,
-
+            jobRole: "",
         };
 
         try {
-            const response = await API.post("/users", userData);
-            const savedUser = response.data;
-
-            // 🧹 Clean old localStorage entries
-            localStorage.removeItem("loggedInUser");
-            localStorage.removeItem("talentProfileData");
-
-            // 💾 Save session
-            localStorage.setItem("user", JSON.stringify(savedUser));
-            localStorage.setItem("clientId", savedUser.id);
-
-            loginUser(savedUser);
-            navigate(`/client-profile/${savedUser.id}`);
+            const registered = await register(userData); // ✅ await response from AuthContext
+            navigate(`/client-profile/${registered.id}`); // ✅ Redirect to correct profile
         } catch (error) {
-            console.error("❌ Failed to register client:", error);
-            alert("Gabim gjatë regjistrimit!");
+            console.error("❌ Error registering client:", error);
+
+            alert(
+                error.response?.data?.message?.join("\n") ||
+                "Gabim gjatë regjistrimit të klientit!"
+            );
         }
     };
-
 
     return (
         <>
@@ -73,7 +71,7 @@ const ClientSideRegistration = () => {
                 </Typography>
 
                 <Typography variant="body1" className="selected-category">
-                    {selectedCategory}
+                    Kategoria e zgjedhur: <strong>{selectedCategory}</strong>
                 </Typography>
 
                 <form onSubmit={handleSubmit} className="registration-form">
@@ -117,7 +115,7 @@ const ClientSideRegistration = () => {
                     />
 
                     <Button type="submit" className="submit-button">
-                        SUBMIT
+                        REGJISTROHU
                     </Button>
                 </form>
             </Box>

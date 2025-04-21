@@ -1,28 +1,23 @@
-// ✅ ProfileTalentCreatePost.jsx - UPDATED TO USE BACKEND
 import { useState } from "react";
 import {
-    Box, Avatar, Button, IconButton, Dialog,
-    DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Chip
+    Box, Avatar, Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle,
+    TextField, MenuItem, Select, FormControl, InputLabel, Chip, Typography
 } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
-import { Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles/ProfileTalentCreatePost.css";
 import { createProject } from "../services/projectService";
+import { useAuth } from "../context/AuthContext";
 
 const roles = ["Developer", "Designer", "Project Manager", "QA Engineer", "Data Scientist"];
 const tools = ["React", "Node.js", "Figma", "Python", "Docker", "Kubernetes", "Jira"];
 
 const ProfileTalentCreatePost = ({ addPost }) => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {
-        name: "John Doe",
-        profilePicture: "/default-avatar.png",
-    };
-
-    const talentId = storedUser.id;
+    const { authUser } = useAuth();
+    const talentId = authUser?.id;
 
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("");
@@ -32,14 +27,13 @@ const ProfileTalentCreatePost = ({ addPost }) => {
     const [media, setMedia] = useState(null);
     const [links, setLinks] = useState([""]);
 
-    const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setTitle(""); setDescription(""); setRole(""); setSelectedTools([]);
         setMedia(null); setLinks([""]); setOpen(false);
     };
 
-    const handleMediaUpload = (event) => {
-        const file = event.target.files[0];
+    const handleMediaUpload = (e) => {
+        const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => setMedia(e.target.result);
@@ -47,21 +41,11 @@ const ProfileTalentCreatePost = ({ addPost }) => {
         }
     };
 
-    const handleLinkChange = (index, value) => {
-        const updatedLinks = [...links];
-        updatedLinks[index] = value;
-        setLinks(updatedLinks);
-    };
-
-    const addNewLink = () => setLinks([...links, ""]);
-
     const handlePost = async () => {
-        if (!title.trim() || !description.trim() || !role.trim() || selectedTools.length === 0) return;
-
-        const newPost = {
+        const post = {
             talentId,
-            user: storedUser.name,
-            profilePicture: storedUser.profilePicture,
+            user: authUser?.name,
+            profilePicture: authUser?.profilePicture || "/default-avatar.png",
             title,
             description,
             role,
@@ -71,57 +55,45 @@ const ProfileTalentCreatePost = ({ addPost }) => {
         };
 
         try {
-            await createProject(newPost);
-            addPost();
+            await createProject(post);
+            addPost(); // callback
             window.dispatchEvent(new Event("projectUpdated"));
             handleClose();
         } catch (err) {
-            console.error("❌ Failed to post project:", err);
+            console.error("❌ Failed to create project:", err);
             alert("Failed to post project");
         }
     };
 
     return (
         <Box className="create-post-container">
-            <Box className="post-input-box" onClick={handleOpen}>
-                <Avatar src={storedUser.profilePicture} className="post-avatar" />
+            <Box className="post-input-box" onClick={() => setOpen(true)}>
+                <Avatar src={authUser?.profilePicture} className="post-avatar" />
                 <Box className="post-text-field">Create a new project...</Box>
             </Box>
 
-            <Dialog open={open} onClose={handleClose} className="post-dialog" maxWidth="md" fullWidth>
+            <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
                 <DialogTitle>
                     <Box className="post-header">
-                        <Avatar src={storedUser.profilePicture} className="post-modal-avatar" />
-                        <span>{storedUser.name}</span>
-                        <IconButton className="close-button" onClick={handleClose}><CloseIcon /></IconButton>
+                        <Avatar src={authUser?.profilePicture} className="post-modal-avatar" />
+                        <span>{authUser?.name}</span>
+                        <IconButton onClick={handleClose}><CloseIcon /></IconButton>
                     </Box>
                 </DialogTitle>
 
                 <DialogContent>
-                    <TextField
-                        fullWidth
-                        label="Project Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                        sx={{ mb: 2 }}
-                    />
-
-                    <ReactQuill
-                        value={description}
-                        onChange={setDescription}
-                        placeholder="Project Description..."
-                    />
+                    <TextField label="Project Title" value={title} fullWidth onChange={(e) => setTitle(e.target.value)} />
+                    <ReactQuill value={description} onChange={setDescription} placeholder="Description" />
 
                     <FormControl fullWidth sx={{ mt: 2 }}>
-                        <InputLabel>Role in Project</InputLabel>
-                        <Select value={role} onChange={(e) => setRole(e.target.value)} required>
-                            {roles.map((r) => <MenuItem key={r} value={r}>{r}</MenuItem>)}
+                        <InputLabel>Role</InputLabel>
+                        <Select value={role} onChange={(e) => setRole(e.target.value)}>
+                            {roles.map(r => <MenuItem key={r} value={r}>{r}</MenuItem>)}
                         </Select>
                     </FormControl>
 
                     <FormControl fullWidth sx={{ mt: 2 }}>
-                        <InputLabel>Tools Used</InputLabel>
+                        <InputLabel>Tools</InputLabel>
                         <Select
                             multiple
                             value={selectedTools}
@@ -136,35 +108,32 @@ const ProfileTalentCreatePost = ({ addPost }) => {
                         </Select>
                     </FormControl>
 
-                    <Typography sx={{ mt: 2 }}>Project Links:</Typography>
-                    {links.map((link, index) => (
+                    <Typography sx={{ mt: 2 }}>Links</Typography>
+                    {links.map((link, i) => (
                         <TextField
-                            key={index}
+                            key={i}
                             fullWidth
                             value={link}
-                            onChange={(e) => handleLinkChange(index, e.target.value)}
+                            onChange={(e) => {
+                                const copy = [...links];
+                                copy[i] = e.target.value;
+                                setLinks(copy);
+                            }}
                             sx={{ mb: 1 }}
-                            placeholder="Add a project link"
                         />
                     ))}
-                    <Button startIcon={<AddLinkIcon />} onClick={addNewLink} sx={{ mt: 1 }}>Add another link</Button>
+                    <Button startIcon={<AddLinkIcon />} onClick={() => setLinks([...links, ""])}>Add link</Button>
 
-                    <Typography sx={{ mt: 2 }}>Attach Media:</Typography>
-                    <Button component="label" startIcon={<ImageIcon />} sx={{ mt: 1 }}>
+                    <Typography sx={{ mt: 2 }}>Media</Typography>
+                    <Button component="label" startIcon={<ImageIcon />}>
                         Upload Image/Video
-                        <input type="file" accept="image/*,video/*" hidden onChange={handleMediaUpload} />
+                        <input type="file" hidden onChange={handleMediaUpload} />
                     </Button>
-                    {media && <img src={media} alt="Preview" width="100%" style={{ marginTop: 10 }} />}
+                    {media && <img src={media} alt="preview" width="100%" style={{ marginTop: 10 }} />}
                 </DialogContent>
 
                 <DialogActions>
-                    <Button
-                        onClick={handlePost}
-                        className="post-submit-button"
-                        disabled={!title.trim() || !description.trim() || !role.trim() || selectedTools.length === 0}
-                    >
-                        Post
-                    </Button>
+                    <Button onClick={handlePost} disabled={!title || !description || !role || selectedTools.length === 0}>Post</Button>
                 </DialogActions>
             </Dialog>
         </Box>

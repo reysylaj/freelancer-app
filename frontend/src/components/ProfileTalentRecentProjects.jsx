@@ -1,181 +1,108 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-    Box, Typography, Card, CardContent, CardMedia,
-    CardActions, Button, Pagination, Avatar, Chip, TextField, Select, MenuItem
+    Box, Typography, Card, CardContent, CardMedia, CardActions,
+    Button, Pagination, Avatar, Chip, TextField, Select, MenuItem
 } from "@mui/material";
 import ProfileTalentViewPostPopup from "./ProfileTalentViewPostPopup";
-import "../styles/ProfileTalentRecentProjects.css";
 import { getProjectsByTalentId } from "../services/projectService";
+import "../styles/ProfileTalentRecentProjects.css";
+import { useAuth } from "../context/AuthContext";
 
 const ITEMS_PER_PAGE = 4;
 
 const ProfileTalentRecentProjects = () => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const { authUser } = useAuth();
     const [projects, setProjects] = useState([]);
-    const [filteredProjects, setFilteredProjects] = useState([]);
-    const [paginatedProjects, setPaginatedProjects] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [paginated, setPaginated] = useState([]);
+    const [search, setSearch] = useState("");
     const [sortOrder, setSortOrder] = useState("recent");
+    const [page, setPage] = useState(1);
+    const [openPopup, setOpenPopup] = useState(false);
+    const [selectedProject, setSelectedProject] = useState(null);
 
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const talentId = storedUser.id;
-
-    // ✅ Fetch projects from backend
     const loadProjects = async () => {
         try {
-            const data = await getProjectsByTalentId(talentId);
-            setProjects(data);
-            setFilteredProjects(data);
-            updatePaginatedProjects(1, data);
-        } catch (error) {
-            console.error("❌ Failed to load projects:", error);
+            const data = await getProjectsByTalentId(authUser?.id);
+            const sorted = data.sort((a, b) =>
+                sortOrder === "recent"
+                    ? new Date(b.createdAt) - new Date(a.createdAt)
+                    : new Date(a.createdAt) - new Date(b.createdAt)
+            );
+            const filtered = sorted.filter(p =>
+                p.title?.toLowerCase().includes(search.toLowerCase()) ||
+                p.description?.toLowerCase().includes(search.toLowerCase())
+            );
+            setProjects(filtered);
+            updatePage(1, filtered);
+        } catch (err) {
+            console.error("Failed loading recent projects:", err);
         }
+    };
+
+    const updatePage = (pg, list = projects) => {
+        const start = (pg - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        setPaginated(list.slice(start, end));
+        setPage(pg);
     };
 
     useEffect(() => {
         loadProjects();
-
-        const handleProjectUpdate = () => loadProjects();
-        window.addEventListener("projectUpdated", handleProjectUpdate);
-
-        return () => {
-            window.removeEventListener("projectUpdated", handleProjectUpdate);
-        };
-    }, [talentId]);
+        const listener = () => loadProjects();
+        window.addEventListener("projectUpdated", listener);
+        return () => window.removeEventListener("projectUpdated", listener);
+    }, [authUser?.id]);
 
     useEffect(() => {
-        applyFilters();
-    }, [searchQuery, sortOrder, projects]);
-
-    const applyFilters = () => {
-        let filtered = [...projects];
-
-        if (searchQuery) {
-            filtered = filtered.filter(post =>
-            (post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.description?.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
-        }
-
-        filtered.sort((a, b) =>
-            sortOrder === "recent"
-                ? new Date(b.createdAt) - new Date(a.createdAt)
-                : new Date(a.createdAt) - new Date(b.createdAt)
-        );
-
-        setFilteredProjects(filtered);
-        updatePaginatedProjects(1, filtered);
-    };
-
-    const updatePaginatedProjects = (page, data = filteredProjects) => {
-        const start = (page - 1) * ITEMS_PER_PAGE;
-        const end = start + ITEMS_PER_PAGE;
-        setPaginatedProjects(data.slice(start, end));
-        setCurrentPage(page);
-    };
-
-    const handlePageChange = (event, value) => {
-        updatePaginatedProjects(value);
-    };
-
-    // ✅ Popup
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [openPopup, setOpenPopup] = useState(false);
-
-    const handleOpenPopup = (project) => {
-        setSelectedProject(project);
-        setOpenPopup(true);
-    };
-
-    const handleClosePopup = () => {
-        setSelectedProject(null);
-        setOpenPopup(false);
-    };
+        updatePage(1);
+    }, [search, sortOrder]);
 
     return (
         <Box className="recent-projects-container">
-            <Typography variant="h5" className="recent-projects-title">Recent Projects</Typography>
-
-            {/* Filters */}
-            <Box className="filters-container" sx={{ display: "flex", gap: 2 }}>
-                <TextField
-                    label="Search by keyword"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    fullWidth
-                />
-                <Select
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                    fullWidth
-                >
+            <Typography variant="h5">Recent Projects</Typography>
+            <Box display="flex" gap={2} mb={2}>
+                <TextField fullWidth label="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} fullWidth>
                     <MenuItem value="recent">Most Recent</MenuItem>
                     <MenuItem value="oldest">Oldest</MenuItem>
                 </Select>
             </Box>
 
-            {paginatedProjects.length === 0 ? (
-                <Typography className="no-posts">No projects found.</Typography>
+            {paginated.length === 0 ? (
+                <Typography>No projects found</Typography>
             ) : (
-                <Box className="cards-container">
-                    {paginatedProjects.map((post) => (
-                        <Card key={post.id} className="post-card">
-                            <CardContent>
-                                {/* User Info */}
-                                <Box display="flex" alignItems="center">
-                                    <Avatar src={post.profilePicture || "/default-avatar.png"} className="user-avatar" />
-                                    <Box>
-                                        <Typography variant="h6">{post.user || "Unknown User"}</Typography>
-                                        <Typography variant="caption">{new Date(post.createdAt).toLocaleDateString()}</Typography>
-                                    </Box>
+                paginated.map((post) => (
+                    <Card key={post.id} className="post-card">
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <Avatar src={post.profilePicture} />
+                                <Box ml={1}>
+                                    <Typography variant="h6">{post.user}</Typography>
+                                    <Typography variant="caption">{new Date(post.createdAt).toLocaleDateString()}</Typography>
                                 </Box>
-
-                                <Typography variant="h6">{post.title}</Typography>
-                                <Typography className="post-text">
-                                    {post.description?.replace(/<[^>]+>/g, "").slice(0, 100) + "..."}
-                                </Typography>
-
-                                <Typography><strong>Role:</strong> {post.role}</Typography>
-
-                                <Box className="tools-container">
-                                    {Array.isArray(post.tools) && post.tools.map((tool, index) => (
-                                        <Chip key={index} label={tool} className="tool-chip" />
-                                    ))}
-                                </Box>
-
-                                {post.media && (
-                                    <CardMedia
-                                        component={post.media.includes("video") ? "video" : "img"}
-                                        src={post.media}
-                                        controls={post.media.includes("video")}
-                                        alt="Project Media"
-                                        className="post-image"
-                                    />
-                                )}
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small" onClick={() => handleOpenPopup(post)}>View</Button>
-                            </CardActions>
-                        </Card>
-                    ))}
-                </Box>
+                            </Box>
+                            <Typography variant="h6">{post.title}</Typography>
+                            <Typography>{post.description?.replace(/<[^>]+>/g, "").slice(0, 100) + "..."}</Typography>
+                            <Typography><strong>Role:</strong> {post.role}</Typography>
+                            <Box>
+                                {Array.isArray(post.tools) && post.tools.map((t, i) => (
+                                    <Chip key={i} label={t} />
+                                ))}
+                            </Box>
+                            {post.media && (
+                                <CardMedia component={post.media.includes("video") ? "video" : "img"} src={post.media} controls />
+                            )}
+                        </CardContent>
+                        <CardActions>
+                            <Button onClick={() => { setSelectedProject(post); setOpenPopup(true); }}>View</Button>
+                        </CardActions>
+                    </Card>
+                ))
             )}
 
-            <Box className="pagination-controls">
-                <Pagination
-                    count={Math.ceil(filteredProjects.length / ITEMS_PER_PAGE)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    size="large"
-                    shape="rounded"
-                />
-            </Box>
+            <Pagination count={Math.ceil(projects.length / ITEMS_PER_PAGE)} page={page} onChange={(e, v) => updatePage(v)} />
 
-            <ProfileTalentViewPostPopup
-                post={selectedProject}
-                open={openPopup}
-                onClose={handleClosePopup}
-            />
+            <ProfileTalentViewPostPopup post={selectedProject} open={openPopup} onClose={() => setOpenPopup(false)} />
         </Box>
     );
 };

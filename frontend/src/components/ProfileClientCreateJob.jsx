@@ -1,4 +1,3 @@
-// ✅ ProfileClientCreateJob.jsx - FINAL VERSION
 import { useState } from "react";
 import {
     Box,

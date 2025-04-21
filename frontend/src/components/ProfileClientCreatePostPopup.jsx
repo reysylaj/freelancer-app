@@ -48,8 +48,7 @@ const ProfileClientCreatePostPopup = ({ onJobPosted = () => { } }) => {
             jobType,
             seniorityLevel,
             workMode,
-            clientId,
-            attachments: [], // 📝 for now you skip file uploads
+            clientId: Number(clientId),
         };
 
         try {

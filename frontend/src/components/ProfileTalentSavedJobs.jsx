@@ -32,7 +32,7 @@ const ProfileTalentSavedJobs = () => {
             const talentId = storedUser.id;
 
             try {
-                const savedFromBackend = await getSavedJobs(talentId);
+                const savedFromBackend = await getSavedJobs(); // ✅ No need to pass talentId
                 setLikedJobs(savedFromBackend);
                 updatePaginatedJobs(1, savedFromBackend);
             } catch (error) {
@@ -119,14 +119,14 @@ const ProfileTalentSavedJobs = () => {
                                 </Box>
 
                                 {/* 🔹 Job Title */}
-                                <Typography variant="h6" className="job-title">{job.title}</Typography>
+                                <Typography>{job.job.title}</Typography>
 
                                 {/* 🔹 Job Budget */}
-                                <Typography className="job-budget">💰 Budget: {job.budget} ALL</Typography>
+                                <Typography className="job-budget">💰 Budget: {job.job?.budget || "N/A"} ALL</Typography>
 
                                 {/* 🔹 Job Work Mode & Type */}
-                                <Typography className="job-details"><strong>Work Mode:</strong> {job.workMode}</Typography>
-                                <Typography className="job-details"><strong>Job Type:</strong> {job.jobType}</Typography>
+                                <Typography className="job-details"><strong>Work Mode:</strong> {job.job?.workMode}</Typography>
+                                <Typography className="job-details"><strong>Job Type:</strong> {job.job?.jobType}</Typography>
 
                                 {/* 🔹 Job Description */}
                                 <Typography className="job-description">

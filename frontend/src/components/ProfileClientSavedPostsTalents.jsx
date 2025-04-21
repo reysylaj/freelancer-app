@@ -1,65 +1,49 @@
 import { useState, useEffect } from "react";
 import {
-    Box,
-    Typography,
-    Card,
-    CardContent,
-    Avatar,
-    Button,
-    Pagination
+    Box, Typography, Card, CardContent,
+    Avatar, Button, Pagination
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClientProfileViewProjectBeforeContact from "./ClientProfileViewProjectBeforeContact";
-import { getAllProjects } from "../services/projectService";
+import { getSavedProjects, removeSavedProjectFromBackend } from "../services/savedProjectService"; // ✅ NEW
 import "../styles/ProfileClientSavedPostsTalents.css";
 
 const ITEMS_PER_PAGE = 4;
 
 const ProfileClientSavedPostsTalents = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const clientId = storedUser.id;
-
-    const [allProjects, setAllProjects] = useState([]);
     const [savedProjects, setSavedProjects] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [paginatedProjects, setPaginatedProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
 
-    // ✅ Load all projects from backend
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchSaved = async () => {
             try {
-                const data = await getAllProjects();
-                setAllProjects(data);
+                const saved = await getSavedProjects(); // ✅ From backend
+                setSavedProjects(saved);
+                setPaginatedProjects(saved.slice(0, ITEMS_PER_PAGE));
             } catch (error) {
-                console.error("❌ Failed to fetch projects from backend", error);
+                console.error("❌ Failed to fetch saved projects", error);
             }
         };
 
-        fetchProjects();
+        fetchSaved();
+        window.addEventListener("savedProjectsUpdated", fetchSaved);
+        return () => window.removeEventListener("savedProjectsUpdated", fetchSaved);
     }, []);
 
-    // ✅ Load saved projects from localStorage per client
-    useEffect(() => {
-        const allSaved = JSON.parse(localStorage.getItem("savedClientProjects")) || {};
-        const savedIds = allSaved[clientId] || [];
-        const matched = allProjects.filter(project => savedIds.some(p => p.id === project.id));
-
-        setSavedProjects(matched);
-        setPaginatedProjects(matched.slice(0, ITEMS_PER_PAGE));
-    }, [allProjects, clientId]);
-
-    const handleRemoveProject = (id) => {
-        const updatedSaved = savedProjects.filter(p => p.id !== id);
-        setSavedProjects(updatedSaved);
-        setPaginatedProjects(updatedSaved.slice(0, ITEMS_PER_PAGE));
-
-        // ✅ Update localStorage
-        const allSaved = JSON.parse(localStorage.getItem("savedClientProjects")) || {};
-        allSaved[clientId] = updatedSaved;
-        localStorage.setItem("savedClientProjects", JSON.stringify(allSaved));
+    const handleRemoveProject = async (id) => {
+        try {
+            await removeSavedProjectFromBackend(id);
+            const updated = savedProjects.filter(p => p.id !== id);
+            setSavedProjects(updated);
+            setPaginatedProjects(updated.slice(0, ITEMS_PER_PAGE));
+            window.dispatchEvent(new Event("savedProjectsUpdated"));
+        } catch (err) {
+            console.error("❌ Failed to remove saved project:", err);
+        }
     };
 
     const handlePageChange = (event, value) => {
@@ -78,14 +62,14 @@ const ProfileClientSavedPostsTalents = () => {
             ) : (
                 <>
                     <Box className="cards-container">
-                        {paginatedProjects.map((project) => (
-                            <Card key={project.id} className="saved-project-card">
+                        {paginatedProjects.map((saved) => (
+                            <Card key={saved.id} className="saved-project-card">
                                 <CardContent>
                                     <Box display="flex" alignItems="center" gap={2}>
-                                        <Avatar src={project.profilePicture || "/default-avatar.png"} />
+                                        <Avatar src={saved.project?.profilePicture || "/default-avatar.png"} />
                                         <Box>
-                                            <Typography variant="h6">{project.title}</Typography>
-                                            <Typography variant="body2">{project.user}</Typography>
+                                            <Typography variant="h6">{saved.project?.title || "Untitled"}</Typography>
+                                            <Typography variant="body2">{saved.project?.user || "Unknown"}</Typography>
                                         </Box>
                                     </Box>
 
@@ -94,7 +78,7 @@ const ProfileClientSavedPostsTalents = () => {
                                             size="small"
                                             startIcon={<VisibilityIcon />}
                                             onClick={() => {
-                                                setSelectedProject(project);
+                                                setSelectedProject(saved.project);
                                                 setOpenPopup(true);
                                             }}
                                         >
@@ -104,7 +88,7 @@ const ProfileClientSavedPostsTalents = () => {
                                         <Button
                                             size="small"
                                             startIcon={<DeleteIcon />}
-                                            onClick={() => handleRemoveProject(project.id)}
+                                            onClick={() => handleRemoveProject(saved.id)}
                                         >
                                             Remove
                                         </Button>

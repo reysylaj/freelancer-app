@@ -6,20 +6,29 @@ import ProfileTalentSkills from "../components/ProfileTalentSkills";
 import ProfileTalentRecentProjects from "../components/ProfileTalentRecentProjects";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { getUserById } from "../services/userService";
+import { getProjectsByTalentId } from "../services/projectService";
 
 const ViewTalentPublicProfile = () => {
-    const { id } = useParams(); // talent ID from URL
+    const { id } = useParams();
     const [talent, setTalent] = useState(null);
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        const foundTalent = users.find((u) => u.id === parseInt(id));
-        setTalent(foundTalent);
+        const loadTalent = async () => {
+            try {
+                const talentData = await getUserById(id);
+                setTalent(talentData);
 
-        const allProjects = JSON.parse(localStorage.getItem("recentProjects")) || [];
-        const filteredProjects = allProjects.filter((proj) => proj.talentId === parseInt(id));
-        setProjects(filteredProjects);
+                const projectData = await getProjectsByTalentId(id);
+                setProjects(projectData);
+            } catch (error) {
+                console.error("Failed to load talent:", error);
+                setTalent(null); // to show "Talent not found"
+            }
+        };
+
+        loadTalent();
     }, [id]);
 
     if (!talent) {

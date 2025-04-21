@@ -41,7 +41,7 @@ const ClientProfile = () => {
         <>
             <Header />
 
-            <Box className="client-profile-container">
+            <Box className="client-profile-container"> 
                 <ProfileClientHeader />
                 <ProfileClientWhoIs />
                 {/* ✅ Button to navigate to the Create Job Page */}

@@ -16,6 +16,7 @@ const jobs_module_1 = require("./jobs/jobs.module");
 const proposals_module_1 = require("./proposals/proposals.module");
 const messages_module_1 = require("./messages/messages.module");
 const saved_module_1 = require("./saved/saved.module");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
             proposals_module_1.ProposalsModule,
             messages_module_1.MessagesModule,
             saved_module_1.SavedModule,
+            auth_module_1.AuthModule,
         ],
     })
 ], AppModule);

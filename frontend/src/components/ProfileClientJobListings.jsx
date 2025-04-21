@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClientProfilePopupViewCreatedPost from "./ClientProfilePopupViewCreatedPost";
 import "../styles/ProfileClientJobListings.css";
-import { getAllJobs } from "../services/jobService";
+import { getAllJobs, deleteJob } from "../services/jobService";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -39,10 +39,14 @@ const ProfileClientJobListings = () => {
         };
     }, [storedClientId]);
 
-    const handleDelete = (id) => {
-        const updatedJobs = jobs.filter(job => job.id !== id);
-        setJobs(updatedJobs);
-        // You can implement backend delete here later
+    const handleDelete = async (id) => {
+        try {
+            await deleteJob(id);
+            const updated = jobs.filter(job => job.id !== id);
+            setJobs(updated);
+        } catch (err) {
+            console.error("❌ Failed to delete job:", err);
+        }
     };
 
     const handleViewJob = (job) => {
