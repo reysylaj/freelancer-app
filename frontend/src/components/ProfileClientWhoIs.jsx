@@ -1,21 +1,36 @@
 import { useState, useEffect } from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import "../styles/ProfileClientWhoIs.css";
+import { useAuth } from "../context/AuthContext";
+import { getClientById, updateClientProfile } from "../services/clientService"; // ✅ make sure these exist
 
 const ProfileClientWhoIs = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const clientId = storedUser.id;
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
 
-    const storedIntros = JSON.parse(localStorage.getItem("clientIntros")) || {};
-    const clientIntro = storedIntros[clientId] || "";
-
-    const [intro, setIntro] = useState(clientIntro);
+    const [intro, setIntro] = useState("");
     const [editing, setEditing] = useState(false);
 
     useEffect(() => {
-        const updatedIntros = { ...storedIntros, [clientId]: intro };
-        localStorage.setItem("clientIntros", JSON.stringify(updatedIntros));
-    }, [intro]);
+        const fetchIntro = async () => {
+            try {
+                const data = await getClientById(clientId);
+                setIntro(data.bio || "");
+            } catch (err) {
+                console.error("Failed to load intro:", err);
+            }
+        };
+        if (clientId) fetchIntro();
+    }, [clientId]);
+
+    const handleSaveIntro = async () => {
+        try {
+            await updateClientProfile(clientId, { bio: intro });
+            setEditing(false);
+        } catch (err) {
+            console.error("Failed to save intro:", err);
+        }
+    };
 
     return (
         <Box className="client-intro-container">
@@ -34,7 +49,7 @@ const ProfileClientWhoIs = () => {
                     {intro || "Click edit to write something about yourself..."}
                 </Typography>
             )}
-            <Button className="intro-edit-button" onClick={() => setEditing(!editing)}>
+            <Button className="intro-edit-button" onClick={editing ? handleSaveIntro : () => setEditing(true)}>
                 {editing ? "Save" : "Edit"}
             </Button>
         </Box>

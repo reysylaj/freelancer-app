@@ -45,12 +45,10 @@ let SavedService = class SavedService {
             throw new common_1.UnauthorizedException();
         }
         try {
-            console.log('✅ Fetching saved projects for clientId:', clientId);
             const saved = await this.savedProjectRepo.find({
                 where: { clientId },
                 relations: ['project'],
             });
-            console.log('✅ Found saved projects:', saved.length);
             return saved;
         }
         catch (error) {

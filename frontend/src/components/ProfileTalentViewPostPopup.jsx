@@ -65,14 +65,9 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
             links: links.filter(link => link.trim() !== ""),
         };
 
-        // ✅ Update the post in localStorage
-        let existingProjects = JSON.parse(localStorage.getItem("recentProjects")) || [];
         existingProjects = existingProjects.map(p => (p.id === post.id ? updatedPost : p));
-        localStorage.setItem("recentProjects", JSON.stringify(existingProjects));
 
-        let publicProjects = JSON.parse(localStorage.getItem("allTalentProjects")) || [];
         publicProjects = publicProjects.map(p => (p.id === post.id ? updatedPost : p));
-        localStorage.setItem("allTalentProjects", JSON.stringify(publicProjects));
 
         // ✅ Update state in parent component
         onUpdate(updatedPost);
@@ -84,13 +79,9 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
 
     // ✅ Delete Post
     const handleDeletePost = () => {
-        let existingProjects = JSON.parse(localStorage.getItem("recentProjects")) || [];
         existingProjects = existingProjects.filter(p => p.id !== post.id);
-        localStorage.setItem("recentProjects", JSON.stringify(existingProjects));
 
-        let publicProjects = JSON.parse(localStorage.getItem("allTalentProjects")) || [];
         publicProjects = publicProjects.filter(p => p.id !== post.id);
-        localStorage.setItem("allTalentProjects", JSON.stringify(publicProjects));
 
         // ✅ Remove from UI
         onDelete(post.id);

@@ -23,8 +23,7 @@ const ProfileClientCreatePostPage = () => {
     const [attachments, setAttachments] = useState([]);
 
     // ✅ Get current user
-    const storedUser = JSON.parse(localStorage.getItem("user")) || { name: "Company Name" };
-
+    const { authUser } = useAuth();
     // ✅ Handle File Upload
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -52,17 +51,14 @@ const ProfileClientCreatePostPage = () => {
             seniorityLevel,
             workMode,
             date: new Date().toLocaleDateString(),
-            user: storedUser.name,
+            user: authUser?.name,
             attachments,
         };
 
-        // ✅ Save job to localStorage for both Client Listings & Public Listings
-        const allJobs = JSON.parse(localStorage.getItem("allJobs")) || [];
         const updatedJobs = [newJob, ...allJobs];
-        localStorage.setItem("allJobs", JSON.stringify(updatedJobs));
 
         // ✅ Redirect to job listings
-        navigate("/client-profile/${clientId}");
+        navigate(`/client-profile/${authUser?.id}`);
     };
 
     return (

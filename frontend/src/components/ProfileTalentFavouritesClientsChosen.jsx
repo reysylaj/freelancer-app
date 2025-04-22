@@ -5,7 +5,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import "../styles/ProfileTalentFavouritesClientsChosen.css";
 
 const ProfileTalentFavouritesClientsChosen = () => {
-    const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem("favoriteClients")) || []);
 
     // Dummy Data (if no favorite clients exist)
     useEffect(() => {
@@ -16,7 +15,6 @@ const ProfileTalentFavouritesClientsChosen = () => {
                 { id: 3, name: "Lisa Chen", company: "Startup Hub", description: "Hiring innovative thinkers for new projects.", photo: "https://randomuser.me/api/portraits/women/60.jpg" },
             ];
             setFavorites(dummyClients);
-            localStorage.setItem("favoriteClients", JSON.stringify(dummyClients));
         }
     }, []);
 
@@ -24,7 +22,6 @@ const ProfileTalentFavouritesClientsChosen = () => {
     const removeFavorite = (id) => {
         const updatedFavorites = favorites.filter(client => client.id !== id);
         setFavorites(updatedFavorites);
-        localStorage.setItem("favoriteClients", JSON.stringify(updatedFavorites));
     };
 
     return (

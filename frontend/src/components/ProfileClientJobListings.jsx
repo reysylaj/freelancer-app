@@ -7,7 +7,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClientProfilePopupViewCreatedPost from "./ClientProfilePopupViewCreatedPost";
 import "../styles/ProfileClientJobListings.css";
-import { getAllJobs, deleteJob } from "../services/jobService";
+import { getAllJobs } from "../services/jobService";
+import { deleteJobById } from "../services/jobService";
+import { useAuth } from "../context/AuthContext";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -17,14 +19,13 @@ const ProfileClientJobListings = () => {
     const [selectedJob, setSelectedJob] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
 
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const storedClientId = JSON.parse(localStorage.getItem("user"))?.id;
+    const { authUser } = useAuth();
 
     useEffect(() => {
         const loadJobs = async () => {
             try {
                 const allJobs = await getAllJobs();
-                const clientJobs = allJobs.filter(job => job.clientId === storedClientId);
+                const clientJobs = allJobs.filter(job => job.clientId === authUser?.id);
                 setJobs(clientJobs);
             } catch (error) {
                 console.error("Failed to fetch jobs:", error);
@@ -37,15 +38,16 @@ const ProfileClientJobListings = () => {
         return () => {
             window.removeEventListener("jobPostedByClient", loadJobs); // ✅ Clean up listener
         };
-    }, [storedClientId]);
+    }, [authUser?.id]);
 
     const handleDelete = async (id) => {
         try {
-            await deleteJob(id);
-            const updated = jobs.filter(job => job.id !== id);
-            setJobs(updated);
-        } catch (err) {
-            console.error("❌ Failed to delete job:", err);
+            await deleteJobById(id); // ✅ delete from backend
+            const updatedJobs = jobs.filter(job => job.id !== id);
+            setJobs(updatedJobs);
+        } catch (error) {
+            console.error("❌ Failed to delete job:", error);
+            alert("Failed to delete job.");
         }
     };
 

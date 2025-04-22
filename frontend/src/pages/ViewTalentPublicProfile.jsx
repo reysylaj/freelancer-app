@@ -15,20 +15,19 @@ const ViewTalentPublicProfile = () => {
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        const loadTalent = async () => {
+        const fetchTalentData = async () => {
             try {
-                const talentData = await getUserById(id);
-                setTalent(talentData);
+                const user = await getUserById(id);
+                setTalent(user);
 
-                const projectData = await getProjectsByTalentId(id);
-                setProjects(projectData);
-            } catch (error) {
-                console.error("Failed to load talent:", error);
-                setTalent(null); // to show "Talent not found"
+                const proj = await getProjectsByTalentId(id);
+                setProjects(proj); // ✅ real-time projects
+            } catch (err) {
+                console.error("Error loading public profile:", err);
             }
         };
 
-        loadTalent();
+        fetchTalentData();
     }, [id]);
 
     if (!talent) {
@@ -41,7 +40,7 @@ const ViewTalentPublicProfile = () => {
             <Box sx={{ padding: 4 }}>
                 <ProfileTalentHeader user={talent} />
                 <ProfileTalentSkills user={talent} readOnly />
-                <ProfileTalentRecentProjects posts={projects} />
+                <ProfileTalentRecentProjects posts={projects} external={projects} />
             </Box>
             <Footer />
         </>

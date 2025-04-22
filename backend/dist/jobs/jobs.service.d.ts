@@ -8,4 +8,5 @@ export declare class JobsService {
     findByClient(clientId: number): Promise<Job[]>;
     findOne(id: number): Promise<Job>;
     delete(id: number): Promise<void>;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

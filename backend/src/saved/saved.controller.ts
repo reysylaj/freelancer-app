@@ -2,11 +2,14 @@ import { Controller, Post, Get, Delete, Body, Param, Req, UseGuards, Unauthorize
 import { SavedService } from './saved.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from '../auth/interfaces/request-with-user';
-
+import { UsersService } from '../users/users.service'; // ✅ Import it
 
 @Controller('saved')
 export class SavedController {
-    constructor(private readonly savedService: SavedService) { }
+    constructor(
+        private readonly savedService: SavedService,
+        private readonly userService: UsersService, // ✅ Inject here
+    ) { }
 
     // 🔹 Save a job (TALENT)
     @UseGuards(AuthGuard)
@@ -67,6 +70,11 @@ export class SavedController {
     findByClient(@Req() req: RequestWithUser) {
         if (!req.user) throw new UnauthorizedException();
         return this.savedService.findByClientId(Number(req.user.id));
+    }
+
+    @Get(':id')
+    getUser(@Param('id') id: number) {
+        return this.userService.findById(id);
     }
 
 }

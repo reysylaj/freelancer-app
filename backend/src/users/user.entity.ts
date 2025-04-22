@@ -32,5 +32,13 @@ export class User {
     @Column({ nullable: true })
     profilePicture!: string;
 
+    @Column({ nullable: true })
+    coverImage!: string;
+
+    @Column({ nullable: true })
+    preferredLink!: string;
+
+    @Column({ nullable: true })
+    jobsPosted!: number;
 
 }

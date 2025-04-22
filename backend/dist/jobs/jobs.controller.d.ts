@@ -8,5 +8,5 @@ export declare class JobsController {
     findAll(): Promise<Job[]>;
     findByClient(clientId: number): Promise<Job[]>;
     findOne(id: number): Promise<Job>;
-    delete(id: number): Promise<void>;
+    remove(id: string): Promise<import("typeorm").DeleteResult>;
 }

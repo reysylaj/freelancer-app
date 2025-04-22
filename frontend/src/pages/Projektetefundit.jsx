@@ -14,6 +14,8 @@ import {
     removeSavedProjectFromBackend,
     getSavedProjects
 } from "../services/savedProjectService";
+import { useAuth } from "../context/AuthContext";
+
 
 const roles = ["Developer", "Designer", "Project Manager", "QA Engineer", "Data Scientist"];
 const tools = ["React", "Node.js", "Figma", "Python", "Docker", "Kubernetes", "Jira"];
@@ -26,6 +28,7 @@ const Projektetefundit = () => {
     const [role, setRole] = useState("");
     const [tool, setTool] = useState("");
     const [popup, setPopup] = useState(null);
+    const { authUser } = useAuth();
 
     // 🔄 Load all projects
     useEffect(() => {
@@ -110,7 +113,13 @@ const Projektetefundit = () => {
 
                         return (
                             <Grid item xs={12} sm={6} md={4} key={project.id}>
-                                <Card onClick={() => setPopup(project)}>
+                                <Card onClick={() => {
+                                    if (!authUser) {
+                                        alert("Krijo nje llogari per me shume.");
+                                        return;
+                                    }
+                                    setPopup(project);
+                                }}>
                                     <CardContent>
                                         <Box display="flex" alignItems="center">
                                             <Avatar src={project.profilePicture} />

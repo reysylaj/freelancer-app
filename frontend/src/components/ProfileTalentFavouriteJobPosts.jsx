@@ -3,7 +3,6 @@ import { Box, Typography, Card, CardContent, CardMedia, Button } from "@mui/mate
 import "../styles/ProfileTalentFavouriteJobPosts.css";
 
 const ProfileTalentFavouriteJobPosts = () => {
-    const [favouriteJobs, setFavouriteJobs] = useState(JSON.parse(localStorage.getItem("favouriteJobs")) || []);
 
     // Dummy Data (if no job posts exist)
     useEffect(() => {
@@ -32,7 +31,6 @@ const ProfileTalentFavouriteJobPosts = () => {
                 },
             ];
             setFavouriteJobs(dummyJobs);
-            localStorage.setItem("favouriteJobs", JSON.stringify(dummyJobs));
         }
     }, []);
 

@@ -12,9 +12,10 @@ export const getAllProjects = async () => {
 };
 
 export const getProjectsByTalentId = async (talentId) => {
-    const response = await API.get(`/projects/talent/${talentId}`);
+    const response = await API.get(`/projects/talent/${talentId}`, { withCredentials: true });
     return response.data;
 };
+
 
 export const deleteProject = async (id) => {
     const response = await API.delete(`/projects/${id}`);

@@ -25,11 +25,10 @@ const ProfileTalentSavedJobs = () => {
     const [openProposalPopup, setOpenProposalPopup] = useState(false);
 
 
-    // ✅ Load saved jobs from localStorage
     useEffect(() => {
         const fetchSaved = async () => {
-            const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-            const talentId = storedUser.id;
+            const { authUser } = useAuth();
+            const talentId = authUser?.id;
 
             try {
                 const savedFromBackend = await getSavedJobs(); // ✅ No need to pass talentId
@@ -142,6 +141,7 @@ const ProfileTalentSavedJobs = () => {
                                 <Button size="small" startIcon={<VisibilityIcon />} onClick={() => handleOpenJobPopup(job)}>
                                     View
                                 </Button>
+
                             </CardActions>
                         </Card>
                     ))}

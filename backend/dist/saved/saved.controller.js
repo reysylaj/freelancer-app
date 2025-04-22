@@ -16,9 +16,11 @@ exports.SavedController = void 0;
 const common_1 = require("@nestjs/common");
 const saved_service_1 = require("./saved.service");
 const auth_guard_1 = require("../auth/auth.guard");
+const users_service_1 = require("../users/users.service");
 let SavedController = class SavedController {
-    constructor(savedService) {
+    constructor(savedService, userService) {
         this.savedService = savedService;
+        this.userService = userService;
     }
     async saveJob(req, body) {
         if (!req.user)
@@ -58,6 +60,9 @@ let SavedController = class SavedController {
         if (!req.user)
             throw new common_1.UnauthorizedException();
         return this.savedService.findByClientId(Number(req.user.id));
+    }
+    getUser(id) {
+        return this.userService.findById(id);
     }
 };
 exports.SavedController = SavedController;
@@ -119,8 +124,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], SavedController.prototype, "findByClient", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], SavedController.prototype, "getUser", null);
 exports.SavedController = SavedController = __decorate([
     (0, common_1.Controller)('saved'),
-    __metadata("design:paramtypes", [saved_service_1.SavedService])
+    __metadata("design:paramtypes", [saved_service_1.SavedService,
+        users_service_1.UsersService])
 ], SavedController);
 //# sourceMappingURL=saved.controller.js.map

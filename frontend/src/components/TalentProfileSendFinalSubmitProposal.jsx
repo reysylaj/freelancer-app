@@ -16,7 +16,7 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
 
     if (!job) return null;
 
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+    const { authUser } = useAuth();
     const clientId = job.clientId;
 
     const handleFileUpload = (event) => {
@@ -31,10 +31,10 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
             jobTitle: job.title,
             clientId: job.clientId,
             clientName: job.user || "Unknown Client",
-            talentId: storedUser.id,
-            talentName: storedUser.name,
-            talentProfilePic: storedUser.profilePicture || "/default-avatar.png",
-            message: coverLetter,
+            talentId: authUser?.id,
+            talentName: authUser?.name,
+            talentProfilePic: authUser?.profilePicture,
+            coverLetter: coverLetter,
             status: "Pending",
         };
 

@@ -37,4 +37,7 @@ export class JobsService {
             throw new NotFoundException(`Job with ID ${id} not found`);
         }
     }
+    async remove(id: number) {
+        return this.jobRepo.delete(id);
+    }
 }

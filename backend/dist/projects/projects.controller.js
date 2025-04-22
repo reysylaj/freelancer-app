@@ -17,20 +17,23 @@ const common_1 = require("@nestjs/common");
 const projects_service_1 = require("./projects.service");
 const create_project_dto_1 = require("./dto/create-project.dto");
 let ProjectsController = class ProjectsController {
-    constructor(service) {
-        this.service = service;
+    constructor(projectService) {
+        this.projectService = projectService;
     }
     create(project) {
-        return this.service.create(project);
+        return this.projectService.create(project);
     }
     findAll() {
-        return this.service.findAll();
+        return this.projectService.findAll();
     }
     findByTalentId(talentId) {
-        return this.service.findByTalentId(talentId);
+        return this.projectService.findByTalentId(talentId);
     }
     delete(id) {
-        return this.service.delete(id);
+        return this.projectService.delete(id);
+    }
+    getByTalent(id) {
+        return this.projectService.findByTalentId(+id);
     }
 };
 exports.ProjectsController = ProjectsController;
@@ -61,6 +64,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProjectsController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Get)('talent/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], ProjectsController.prototype, "getByTalent", null);
 exports.ProjectsController = ProjectsController = __decorate([
     (0, common_1.Controller)('projects'),
     __metadata("design:paramtypes", [projects_service_1.ProjectsService])

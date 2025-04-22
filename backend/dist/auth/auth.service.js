@@ -20,9 +20,7 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async register(body, response) {
-        console.log("📥 Incoming registration request:", body);
         const existingUser = await this.usersService.findByEmail(body.email);
-        console.log("🔍 Existing user found:", existingUser);
         if (existingUser) {
             throw new common_1.BadRequestException('User already exists');
         }

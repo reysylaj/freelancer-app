@@ -8,11 +8,12 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { createJob } from "../services/jobService"; //
+import { useAuth } from "../context/AuthContext";
 
 
 const ProfileClientCreatePostPopup = ({ onJobPosted = () => { } }) => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || { name: "Company Name", profilePicture: "" };
-    const clientId = storedUser?.id;
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
 
     const [open, setOpen] = useState(false);
     const [jobTitle, setJobTitle] = useState("");
@@ -79,8 +80,8 @@ const ProfileClientCreatePostPopup = ({ onJobPosted = () => { } }) => {
                 <DialogTitle>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
                         <Box display="flex" alignItems="center" gap={2}>
-                            <Avatar src={storedUser.profilePicture} />
-                            <Typography variant="h6">{storedUser.name}</Typography>
+                            <Avatar src={authUser.profilePicture} />
+                            <Typography variant="h6">{authUser.name}</Typography>
                         </Box>
                         <IconButton onClick={handleClose}><CloseIcon /></IconButton>
                     </Box>

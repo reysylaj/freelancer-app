@@ -14,6 +14,7 @@ const saved_controller_1 = require("./saved.controller");
 const saved_job_entity_1 = require("./saved-job.entity");
 const saved_project_entity_1 = require("./saved-project.entity");
 const auth_module_1 = require("../auth/auth.module");
+const users_module_1 = require("../users/users.module");
 let SavedModule = class SavedModule {
 };
 exports.SavedModule = SavedModule;
@@ -21,7 +22,8 @@ exports.SavedModule = SavedModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([saved_job_entity_1.SavedJob, saved_project_entity_1.SavedProject]),
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            users_module_1.UsersModule
         ],
         providers: [saved_service_1.SavedService],
         controllers: [saved_controller_1.SavedController],

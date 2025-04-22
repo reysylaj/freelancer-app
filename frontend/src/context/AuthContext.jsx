@@ -1,11 +1,11 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
     registerUser,
     loginUser,
     logoutUser,
-    getCurrentUser
+    getCurrentUser,
 } from '../services/authService';
-import API from '../services/api';
 
 const AuthContext = createContext();
 
@@ -13,17 +13,16 @@ export const AuthProvider = ({ children }) => {
     const [authUser, setAuthUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // ✅ Automatically check session from cookie on app load / refresh
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const res = await API.get("/auth/profile", { withCredentials: true });
-                setAuthUser(res.data);
-                localStorage.setItem("user", JSON.stringify(res.data));
+                const res = await getCurrentUser(); // gets user from cookie session
+                setAuthUser(res.data); // ✅ save session user
             } catch (err) {
-                setAuthUser(null);
-                localStorage.removeItem("user");
+                setAuthUser(null); // session expired or no cookie
             } finally {
-                setLoading(false); // ✅ This was missing!
+                setLoading(false); // always stop loading
             }
         };
         checkSession();
@@ -31,9 +30,8 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (formData) => {
         try {
-            const response = await registerUser(formData);
-            setAuthUser(response.data);
-            localStorage.setItem("user", JSON.stringify(response.data));
+            const response = await registerUser(formData); // sets cookie in backend
+            setAuthUser(response.data); // update user context
             return response.data;
         } catch (error) {
             console.error("❌ Register failed:", error.response?.data || error.message);
@@ -48,9 +46,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (formData) => {
         try {
-            const response = await loginUser(formData);
-            setAuthUser(response.data);
-            localStorage.setItem("user", JSON.stringify(response.data));
+            const response = await loginUser(formData); // sets cookie in backend
+            setAuthUser(response.data); // update user context
             return response.data;
         } catch (error) {
             console.error("❌ Login failed:", error.response?.data || error.message);
@@ -59,9 +56,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await logoutUser();
-        localStorage.removeItem("user");
-        localStorage.removeItem("talentProfileData");
+        await logoutUser(); // clears cookie
         setAuthUser(null);
     };
 

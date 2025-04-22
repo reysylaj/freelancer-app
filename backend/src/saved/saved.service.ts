@@ -44,14 +44,12 @@ export class SavedService {
         }
 
         try {
-            console.log('✅ Fetching saved projects for clientId:', clientId);
 
             const saved = await this.savedProjectRepo.find({
                 where: { clientId },
                 relations: ['project'], // ✅ Important for full project details
             });
 
-            console.log('✅ Found saved projects:', saved.length);
             return saved;
 
         } catch (error) {

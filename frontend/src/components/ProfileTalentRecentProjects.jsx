@@ -10,7 +10,7 @@ import { useAuth } from "../context/AuthContext";
 
 const ITEMS_PER_PAGE = 4;
 
-const ProfileTalentRecentProjects = () => {
+const ProfileTalentRecentProjects = ({ posts = null }) => {
     const { authUser } = useAuth();
     const [projects, setProjects] = useState([]);
     const [paginated, setPaginated] = useState([]);
@@ -22,7 +22,7 @@ const ProfileTalentRecentProjects = () => {
 
     const loadProjects = async () => {
         try {
-            const data = await getProjectsByTalentId(authUser?.id);
+            const data = posts || await getProjectsByTalentId(authUser?.id);
             const sorted = data.sort((a, b) =>
                 sortOrder === "recent"
                     ? new Date(b.createdAt) - new Date(a.createdAt)
@@ -51,7 +51,7 @@ const ProfileTalentRecentProjects = () => {
         const listener = () => loadProjects();
         window.addEventListener("projectUpdated", listener);
         return () => window.removeEventListener("projectUpdated", listener);
-    }, [authUser?.id]);
+    }, [authUser?.id, posts]);
 
     useEffect(() => {
         updatePage(1);

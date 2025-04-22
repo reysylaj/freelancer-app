@@ -5,18 +5,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "../styles/ProfileTalentHeader.css";
 
 const ProfileTalentHeader = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {
-        name: "John",
-        surname: "Doe",
-        role: "Software Engineer",
-        jobRole: "Frontend Developer",
-        jobSeekingCategory: "Web Development",
-        jobsConfirmed: 0,
-        profilePicture: null,
-        coverImage: null,
-    };
+    const { authUser } = useAuth();
 
-    const [user, setUser] = useState(storedUser);
+    const [user, setUser] = useState(authUser);
 
     // ✅ Handle Profile Picture Upload
     const handleProfilePictureChange = (event) => {
@@ -25,7 +16,6 @@ const ProfileTalentHeader = () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setUser((prev) => ({ ...prev, profilePicture: e.target.result }));
-                localStorage.setItem("user", JSON.stringify({ ...user, profilePicture: e.target.result }));
             };
             reader.readAsDataURL(file);
         }
@@ -38,7 +28,6 @@ const ProfileTalentHeader = () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setUser((prev) => ({ ...prev, coverImage: e.target.result }));
-                localStorage.setItem("user", JSON.stringify({ ...user, coverImage: e.target.result }));
             };
             reader.readAsDataURL(file);
         }
@@ -47,13 +36,11 @@ const ProfileTalentHeader = () => {
     // ✅ Delete Profile Picture
     const handleDeleteProfilePicture = () => {
         setUser((prev) => ({ ...prev, profilePicture: null }));
-        localStorage.setItem("user", JSON.stringify({ ...user, profilePicture: null }));
     };
 
     // ✅ Delete Cover Image
     const handleDeleteCoverImage = () => {
         setUser((prev) => ({ ...prev, coverImage: null }));
-        localStorage.setItem("user", JSON.stringify({ ...user, coverImage: null }));
     };
 
     return (

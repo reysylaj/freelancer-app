@@ -17,10 +17,10 @@ import { createJob } from "../services/jobService";
 
 const ProfileClientCreateJob = () => {
     const navigate = useNavigate();
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const clientId = storedUser?.id;
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
 
-    if (!storedUser || !clientId) {
+    if (!authUser || !clientId) {
         alert("You must be logged in as a client to create a job.");
         navigate("/login");
         return null;
@@ -48,12 +48,10 @@ const ProfileClientCreateJob = () => {
             seniorityLevel: "Junior",
         };
 
-        console.log("🚀 Sending job to backend:", newJob); // ✅ DEBUG
 
 
         try {
             const response = await createJob(newJob);
-            console.log("✅ Response from backend:", response); // ✅ DEBUG
             window.dispatchEvent(new Event("jobPostedByClient"));
             navigate(`/client-profile/${clientId}`);
         } catch (error) {
@@ -66,7 +64,7 @@ const ProfileClientCreateJob = () => {
         <Box className="create-job-form-container">
             <Paper elevation={3} className="job-form-paper">
                 <Box className="job-form-header">
-                    <Avatar src={storedUser.profilePicture} className="job-form-avatar" />
+                    <Avatar src={authUser.profilePicture} className="job-form-avatar" />
                     <Typography variant="h5">Create a Job</Typography>
                 </Box>
 

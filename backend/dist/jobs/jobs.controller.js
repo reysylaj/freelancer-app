@@ -21,7 +21,6 @@ let JobsController = class JobsController {
         this.jobsService = jobsService;
     }
     create(job) {
-        console.log('Incoming Job:', job);
         return this.jobsService.create(job);
     }
     findAll() {
@@ -33,8 +32,8 @@ let JobsController = class JobsController {
     findOne(id) {
         return this.jobsService.findOne(id);
     }
-    delete(id) {
-        return this.jobsService.delete(id);
+    remove(id) {
+        return this.jobsService.remove(Number(id));
     }
 };
 exports.JobsController = JobsController;
@@ -69,9 +68,9 @@ __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], JobsController.prototype, "delete", null);
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], JobsController.prototype, "remove", null);
 exports.JobsController = JobsController = __decorate([
     (0, common_1.Controller)('jobs'),
     __metadata("design:paramtypes", [jobs_service_1.JobsService])

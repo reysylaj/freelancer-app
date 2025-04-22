@@ -6,7 +6,6 @@ const ProfileTalentProposals = () => {
     const [proposals, setProposals] = useState([]);
 
     useEffect(() => {
-        const storedProposals = JSON.parse(localStorage.getItem("proposals")) || [];
         setProposals(storedProposals);
     }, []);
 

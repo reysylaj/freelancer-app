@@ -22,14 +22,12 @@ const ClientProfile = () => {
     const [jobRefreshTrigger, setJobRefreshTrigger] = useState(0);
 
     useEffect(() => {
-        const savedJobs = JSON.parse(localStorage.getItem("allJobs")) || [];
         setJobs(savedJobs);
     }, []);
 
     const handleNewJob = (newJob) => {
         const updatedJobs = [newJob, ...jobs];
         setJobs(updatedJobs);
-        localStorage.setItem("allJobs", JSON.stringify(updatedJobs));
 
         setJobRefreshTrigger((prev) => prev + 1); // 🔄 Trigger refresh
     };
@@ -40,7 +38,7 @@ const ClientProfile = () => {
     return (
         <>
             <Header />
-
+ 
             <Box className="client-profile-container"> 
                 <ProfileClientHeader />
                 <ProfileClientWhoIs />

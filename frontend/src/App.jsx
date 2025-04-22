@@ -35,7 +35,8 @@ function App() {
 
         <Route path="/talent-profile/:id" element={<ProtectedRoute role="talent" element={<TalentProfile />} />} />
         <Route path="/client-profile/:id" element={<ProtectedRoute role="client" element={<ClientProfile />} />} />
-        <Route path="/view-talent-profile/:id" element={<ProtectedRoute role="client" element={<ViewTalentPublicProfile />} />} />
+
+        <Route path="/view-talent-profile/:id" element={<ViewTalentPublicProfile />} />
 
 
 

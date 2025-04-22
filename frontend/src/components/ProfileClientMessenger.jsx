@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import "../styles/ProfileClientMessenger.css";
 import { getConversation, sendMessage } from "../services/messageService";
+import { useAuth } from "../context/AuthContext";
+
 
 const ProfileClientMessenger = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const clientId = storedUser.id;
-    const selectedTalentId = parseInt(localStorage.getItem("selectedTalentId"));
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
 
     const [conversations, setConversations] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
@@ -35,7 +36,6 @@ const ProfileClientMessenger = () => {
             setMessages(data);
             setSelectedChat({
                 talentId,
-                talentName: localStorage.getItem("selectedTalentName") || "Talent",
                 talentAvatar: "/default-avatar.png", // You can pass real avatar if needed
             });
         } catch (error) {

@@ -11,10 +11,9 @@ const ProfileClientSavedJobs = () => {
     const [savedJobs, setSavedJobs] = useState([]);
 
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-        const clientId = storedUser.id;
+        const { authUser } = useAuth();
+        const clientId = authUser?.id;
 
-        const allSavedJobs = JSON.parse(localStorage.getItem("savedClientJobs")) || {};
         const clientSavedJobs = allSavedJobs[clientId] || [];
 
         setSavedJobs(clientSavedJobs);
@@ -26,12 +25,10 @@ const ProfileClientSavedJobs = () => {
         const updatedJobs = savedJobs.filter(job => job.id !== id);
         setSavedJobs(updatedJobs);
 
-        const allSavedJobs = JSON.parse(localStorage.getItem("savedClientJobs")) || {};
-        const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+        const { authUser } = useAuth();
         const clientId = storedUser.id;
 
         allSavedJobs[clientId] = updatedJobs;
-        localStorage.setItem("savedClientJobs", JSON.stringify(allSavedJobs));
     };
 
 

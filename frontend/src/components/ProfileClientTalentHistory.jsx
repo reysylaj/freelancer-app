@@ -9,7 +9,6 @@ const ProfileClientTalentHistory = () => {
     const [talentHistory, setTalentHistory] = useState([]);
 
     useEffect(() => {
-        const storedTalentHistory = JSON.parse(localStorage.getItem("clientTalentHistory")) || [];
         setTalentHistory(storedTalentHistory);
     }, []);
 

@@ -52,11 +52,9 @@ const TalentSideRegistration = () => {
             //profilePicture: ""
         };
 
-        console.log("📦 Sending this to backend:", newTalent);
 
         try {
             const savedTalent = await register(newTalent);
-            localStorage.setItem("user", JSON.stringify(savedTalent));
             navigate(`/talent-profile/${savedTalent.id}`);
 
 

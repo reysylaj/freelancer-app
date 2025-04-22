@@ -13,16 +13,14 @@ import "../styles/ProfileTalentMessenger.css";
 import { getConversation, sendMessage } from "../services/messageService";
 
 const ProfileTalentMessenger = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const talentId = storedUser.id;
+    const { authUser } = useAuth();
+    const talentId = authUser?.id;
 
     const [conversations, setConversations] = useState([]); // Optional if you list clients later
     const [selectedChat, setSelectedChat] = useState(null);
     const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
 
-    const selectedClientId = parseInt(localStorage.getItem("selectedClientId"));
-    const selectedClientName = localStorage.getItem("selectedClientName");
 
     useEffect(() => {
         if (selectedClientId && talentId) {

@@ -7,7 +7,6 @@ import "../styles/Header.css";
 
 const Header = () => {
     const { authUser, logout } = useAuth(); // ✅ Updated context usage
-    console.log("💡 Logged in user:", authUser);
 
     const navigate = useNavigate();
 

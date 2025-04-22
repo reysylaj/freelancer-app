@@ -42,12 +42,9 @@ const RegisteringAsAgency = () => {
             category: selectedCategory,
         };
 
-        console.log("User Data to be Saved:", agencyData);
 
         loginUser(agencyData); // ✅ Save user in Context
-        localStorage.setItem("user", JSON.stringify(agencyData)); // ✅ Save in localStorage
 
-        console.log("Stored User in localStorage:", localStorage.getItem("user"));
 
         navigate("/agency-profile");
     };

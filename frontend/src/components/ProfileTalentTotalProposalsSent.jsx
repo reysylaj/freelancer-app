@@ -19,7 +19,7 @@ const ProfileTalentTotalProposalsSent = () => {
     const [proposals, setProposals] = useState([]);
     const [filter, setFilter] = useState("All");
 
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+    const { authUser } = useAuth();
     const talentId = storedUser.id;
 
     useEffect(() => {

@@ -52,7 +52,7 @@ const ClientProfileViewProjectBeforeContact = ({ project, open, onClose }) => {
 
             <DialogActions>
                 {/* 🔹 Talent Profile Button - Redirect to /talent-profile/{talentId} */}
-                <Button variant="contained" color="primary" onClick={() => navigate(`/talent-profile/${project.talentId}`)}>
+                <Button variant="contained" color="primary" onClick={() => navigate(`/view-talent-profile/${project.talentId}`)}>
                     View Talent Profile
                 </Button>
 

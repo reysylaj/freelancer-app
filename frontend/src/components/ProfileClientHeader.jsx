@@ -4,115 +4,104 @@ import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "../styles/ProfileClientHeader.css";
+import { useAuth } from "../context/AuthContext";
+import { getClientById, updateClientProfile } from "../services/clientService"; // ✅ create these API functions
 
 const ProfileClientHeader = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const clientId = storedUser.id;
-
-    const storedClients = JSON.parse(localStorage.getItem("clientProfiles")) || {};
-    const clientData = storedClients[clientId] || {
-        name: "Jane",
-        surname: "Doe",
-        role: "Hiring Manager",
-        preferredLink: "https://company.com/janedoe",
-        jobsPosted: 0,
-        profilePicture: null,
-        coverImage: null,
-    };
-
-    const [user, setUser] = useState(clientData);
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
+    const [user, setUser] = useState(null);
     const [editing, setEditing] = useState(false);
 
-    // ✅ Save profile to local storage per client
-    const saveProfile = (updatedData) => {
-        const updatedClients = { ...storedClients, [clientId]: updatedData };
-        localStorage.setItem("clientProfiles", JSON.stringify(updatedClients));
-    };
+    useEffect(() => {
+        const loadProfile = async () => {
+            try {
+                const { data } = await getClientById(authUser.id);
+                setUser(data);
+            } catch (err) {
+                console.error("Failed to load profile", err);
+            }
+        };
+        loadProfile();
+    }, [authUser]);
 
-    // ✅ Update Profile Fields
+
+
+
     const handleChange = (e) => {
-        const updatedUser = { ...user, [e.target.name]: e.target.value };
-        setUser(updatedUser);
-        saveProfile(updatedUser);
+        setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    // ✅ Handle Profile Picture Upload
-    const handleProfilePictureChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const updatedUser = { ...user, profilePicture: e.target.result };
-                setUser(updatedUser);
-                saveProfile(updatedUser);
-            };
-            reader.readAsDataURL(file);
+    const handleSave = async () => {
+        try {
+            await updateClientProfile(clientId, user); // 📡 Update to DB
+            setEditing(false);
+        } catch (err) {
+            console.error("Failed to update profile:", err);
+            alert("Failed to update profile");
         }
     };
 
-    // ✅ Handle Cover Image Upload
-    const handleCoverImageChange = (event) => {
+    const handleImageUpload = async (event, field) => {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const updatedUser = { ...user, coverImage: e.target.result };
-                setUser(updatedUser);
-                saveProfile(updatedUser);
-            };
-            reader.readAsDataURL(file);
-        }
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const updatedUser = { ...user, [field]: e.target.result };
+            setUser(updatedUser);
+            await updateClientProfile(clientId, updatedUser);
+        };
+        reader.readAsDataURL(file);
     };
 
-    // ✅ Handle Image Deletion
-    const handleDeleteProfilePicture = () => {
-        const updatedUser = { ...user, profilePicture: null };
+    const handleImageDelete = async (field) => {
+        const updatedUser = { ...user, [field]: null };
         setUser(updatedUser);
-        saveProfile(updatedUser);
+        await updateClientProfile(clientId, updatedUser);
     };
 
-    const handleDeleteCoverImage = () => {
-        const updatedUser = { ...user, coverImage: null };
-        setUser(updatedUser);
-        saveProfile(updatedUser);
-    };
+    if (!user) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+                <Typography>Loading client profile...</Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box className="profile-client-header">
-            {/* Cover Image */}
             <Box className="cover-container">
                 <img src={user.coverImage || "/default-cover.jpg"} alt="Cover" className="cover-image" />
                 <Box className="cover-actions">
                     <IconButton component="label" className="edit-cover-btn">
                         <CameraAltIcon />
-                        <input type="file" hidden onChange={handleCoverImageChange} />
+                        <input type="file" hidden onChange={(e) => handleImageUpload(e, "coverImage")} />
                     </IconButton>
                     {user.coverImage && (
-                        <IconButton className="delete-cover-btn" onClick={handleDeleteCoverImage}>
+                        <IconButton className="delete-cover-btn" onClick={() => handleImageDelete("coverImage")}>
                             <DeleteIcon />
                         </IconButton>
                     )}
                 </Box>
             </Box>
 
-            {/* Profile Info */}
             <Box className="profile-info">
                 <Box className="avatar-container">
                     <Avatar src={user.profilePicture || "/default-avatar.png"} className="profile-avatar" />
                     <Box className="avatar-actions">
                         <IconButton component="label" className="edit-avatar-btn">
                             <CameraAltIcon />
-                            <input type="file" hidden onChange={handleProfilePictureChange} />
+                            <input type="file" hidden onChange={(e) => handleImageUpload(e, "profilePicture")} />
                         </IconButton>
                         {user.profilePicture && (
-                            <IconButton className="delete-avatar-btn" onClick={handleDeleteProfilePicture}>
+                            <IconButton className="delete-avatar-btn" onClick={() => handleImageDelete("profilePicture")}>
                                 <DeleteIcon />
                             </IconButton>
                         )}
                     </Box>
                 </Box>
 
-                {/* Editable Fields */}
                 <Box className="details-container">
                     {editing ? (
                         <>
@@ -132,12 +121,8 @@ const ProfileClientHeader = () => {
                             </Typography>
                         </>
                     )}
-
-                    {/* Edit and Save Buttons */}
                     {editing ? (
-                        <Button variant="contained" color="success" onClick={() => setEditing(false)}>
-                            Save
-                        </Button>
+                        <Button variant="contained" color="success" onClick={handleSave}>Save</Button>
                     ) : (
                         <IconButton onClick={() => setEditing(true)} className="edit-btn">
                             <EditIcon />
@@ -146,7 +131,6 @@ const ProfileClientHeader = () => {
                 </Box>
             </Box>
 
-            {/* Jobs Posted */}
             <Box className="jobs-posted">
                 <Typography variant="h6">Total Jobs Posted: {user.jobsPosted}</Typography>
             </Box>

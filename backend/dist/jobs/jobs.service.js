@@ -44,6 +44,9 @@ let JobsService = class JobsService {
             throw new common_1.NotFoundException(`Job with ID ${id} not found`);
         }
     }
+    async remove(id) {
+        return this.jobRepo.delete(id);
+    }
 };
 exports.JobsService = JobsService;
 exports.JobsService = JobsService = __decorate([

@@ -9,8 +9,8 @@ import "../styles/ProfileClientReceivedProposals.css";
 const ITEMS_PER_PAGE = 4;
 
 const ProfileClientReceivedProposals = () => {
-    const { authUser } = useAuth(); // ✅ use the context
-    const clientId = authUser?.id; // ✅ instead of localStorage
+    const { authUser } = useAuth(); 
+    const clientId = authUser?.id; 
     const navigate = useNavigate();
 
     const [proposals, setProposals] = useState([]);
@@ -68,7 +68,7 @@ const ProfileClientReceivedProposals = () => {
     };
 
     const handleViewTalentProfile = (talentId) => {
-        navigate(`/view-talent-profile/${proposal.talentId}`);
+        navigate(`/view-talent-profile/${talentId}`);
     };
 
     return (
@@ -96,6 +96,12 @@ const ProfileClientReceivedProposals = () => {
                                     </Button>
                                     <Button size="small" variant="outlined" onClick={() => handleViewTalentProfile(proposal.talentId)}>
                                         View Talent Profile
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => handleRemoveProject(saved.id)}
+                                    >
+                                        Message Talent
                                     </Button>
                                 </Stack>
                             </CardContent>

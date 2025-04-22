@@ -92,6 +92,12 @@ const ProfileClientSavedPostsTalents = () => {
                                         >
                                             Remove
                                         </Button>
+                                        <Button
+                                            size="small"
+                                            onClick={() => handleRemoveProject(saved.id)}
+                                        >
+                                            Message Talent
+                                        </Button>
                                     </Box>
                                 </CardContent>
                             </Card>

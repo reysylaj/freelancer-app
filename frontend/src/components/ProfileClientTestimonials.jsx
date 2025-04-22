@@ -6,7 +6,6 @@ const ProfileClientTestimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
 
     useEffect(() => {
-        const savedTestimonials = JSON.parse(localStorage.getItem("clientTestimonials")) || [];
         setTestimonials(savedTestimonials);
     }, []);
 

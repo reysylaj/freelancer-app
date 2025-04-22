@@ -25,6 +25,8 @@ import {
   removeSavedJobFromBackend,
   getSavedJobs,
 } from "../services/savedJobService";
+import { useAuth } from "../context/AuthContext";
+
 
 const Punetefundit = () => {
   const [jobs, setJobs] = useState([]);
@@ -33,9 +35,9 @@ const Punetefundit = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [openJobPopup, setOpenJobPopup] = useState(false);
   const [openProposalPopup, setOpenProposalPopup] = useState(false);
+  const { authUser } = useAuth();
 
-  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-  const talentId = storedUser.id;
+  const talentId = authUser?.id;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("recent");
@@ -63,12 +65,10 @@ const Punetefundit = () => {
       const jobsFromBackend = await getAllJobs();
       setJobs(jobsFromBackend);
 
-      const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser && storedUser.role === "talent") {
         const saved = await getSavedJobs(); // ✅ Only fetch if talent
         setSavedJobs(saved);
 
-        const storedLikedJobs = JSON.parse(localStorage.getItem("likedTalentJobs")) || [];
         const userLikedJobs = storedLikedJobs.filter(job => job.talentId === storedUser.id);
         setLikedJobs(userLikedJobs);
       } else {
@@ -155,7 +155,6 @@ const Punetefundit = () => {
       updatedLikedJobs = [...likedJobs, job];
     }
     setLikedJobs(updatedLikedJobs);
-    localStorage.setItem("likedTalentJobs", JSON.stringify(updatedLikedJobs));
   };
 
   return (
@@ -230,7 +229,14 @@ const Punetefundit = () => {
               <Typography className="no-jobs">No jobs available.</Typography>
             ) : (
               filteredJobs.map((job) => (
-                <Card key={job.id} className="job-card" onClick={() => handleOpenJobPopup(job)}>
+                <Card key={job.id} className="job-card" onClick={() => {
+                  if (!authUser) {
+                    alert("Krijo nje llogari per me shume.");
+                    return;
+                  }
+                  handleOpenJobPopup(job);
+                }}>
+
                   <CardContent>
                     <Typography variant="h6">{job.title}</Typography>
                     <Typography className="job-description">{job.description}</Typography>

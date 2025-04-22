@@ -10,7 +10,6 @@ export class JobsController {
 
     @Post()
     create(@Body() job: CreateJobDto): Promise<Job> {
-        console.log('Incoming Job:', job); // 👈 Add this temporarily
         return this.jobsService.create(job);
     }
 
@@ -30,7 +29,7 @@ export class JobsController {
     }
 
     @Delete(':id')
-    delete(@Param('id') id: number): Promise<void> {
-        return this.jobsService.delete(id);
+    remove(@Param('id') id: string) {
+        return this.jobsService.remove(Number(id));
     }
 }

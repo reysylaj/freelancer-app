@@ -2,55 +2,57 @@ import { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import "../styles/ProfileTalentSkills.css";
+import { useAuth } from "../context/AuthContext";
+import { getClientById, updateClientProfile } from "../services/clientService"; // ✅ your service
 
 const ProfileTalentSkills = () => {
-    // ✅ Get logged-in user
-    const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-    const talentId = storedUser.id || "defaultTalent"; // Ensure we have a unique identifier
+    const { authUser } = useAuth();
+    const talentId = authUser?.id;
 
-    // ✅ Load profile data from localStorage
-    const loadTalentProfileData = () => {
-        const storedProfileData = JSON.parse(localStorage.getItem("talentProfileData")) || {};
-        return storedProfileData[talentId] || {
-            bio: "Write about yourself here...",
-            skills: []
-        };
-    };
-
-    const [bio, setBio] = useState(loadTalentProfileData().bio);
-    const [skills, setSkills] = useState(loadTalentProfileData().skills);
+    const [bio, setBio] = useState("");
+    const [skills, setSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [editingBio, setEditingBio] = useState(false);
 
-    // ✅ Save profile data whenever `bio` or `skills` change
+    // ✅ Load from backend
     useEffect(() => {
-        console.log("💾 Saving Talent Profile Data...");
-        const storedProfileData = JSON.parse(localStorage.getItem("talentProfileData")) || {};
+        const fetchTalentProfile = async () => {
+            try {
+                const { data } = await getClientById(talentId); // this fetches full User
+                setBio(data.bio || "");
+                setSkills(data.skills ? data.skills.split(",") : []);
+            } catch (err) {
+                console.error("Failed to load talent profile:", err);
+            }
+        };
+        if (talentId) fetchTalentProfile();
+    }, [talentId]);
 
-        localStorage.setItem(
-            "talentProfileData",
-            JSON.stringify({
-                ...storedProfileData,
-                [talentId]: { bio, skills }
-            })
-        );
-    }, [bio, skills, talentId]);
-
-    // ✅ Add new skill
-    const handleAddSkill = () => {
+    const handleAddSkill = async () => {
         if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-            setSkills([...skills, newSkill.trim()]);
+            const updatedSkills = [...skills, newSkill.trim()];
+            setSkills(updatedSkills);
             setNewSkill("");
+            await updateClientProfile(talentId, {
+                skills: updatedSkills.join(","),
+            });
         }
     };
 
-    // ✅ Remove a skill
-    const handleRemoveSkill = (skillToRemove) => {
-        setSkills(skills.filter(skill => skill !== skillToRemove));
+    const handleRemoveSkill = async (skillToRemove) => {
+        const updatedSkills = skills.filter(skill => skill !== skillToRemove);
+        setSkills(updatedSkills);
+        await updateClientProfile(talentId, {
+            skills: updatedSkills.join(","),
+        });
     };
 
-    // ✅ Toggle edit mode for bio
-    const handleEditBio = () => setEditingBio(!editingBio);
+    const handleEditBio = async () => {
+        if (editingBio) {
+            await updateClientProfile(talentId, { bio });
+        }
+        setEditingBio(!editingBio);
+    };
 
     return (
         <Box className="profile-talent-skills">
@@ -101,7 +103,7 @@ const ProfileTalentSkills = () => {
                     label="Add a skill"
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleAddSkill()}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
                     fullWidth
                     className="skill-input"
                 />
