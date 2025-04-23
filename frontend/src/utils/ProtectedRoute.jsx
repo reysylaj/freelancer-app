@@ -6,7 +6,7 @@ const ProtectedRoute = ({ element, role }) => {
 
     if (loading) return null; // or a loading spinner
 
-    if (!authUser) return <Navigate to="/login" />;
+    if (!authUser) return <Navigate to="/" />;
     if (role && authUser.role !== role) return <Navigate to="/" />;
 
     return element;

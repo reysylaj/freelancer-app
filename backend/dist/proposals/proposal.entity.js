@@ -33,7 +33,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Proposal.prototype, "clientId", void 0);
 __decorate([
-    (0, typeorm_1.Column)('text'),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Proposal.prototype, "message", void 0);
 __decorate([
@@ -41,9 +41,13 @@ __decorate([
     __metadata("design:type", String)
 ], Proposal.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
+    (0, typeorm_1.Column)({ type: 'text' }),
+    __metadata("design:type", String)
+], Proposal.prototype, "coverLetter", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
-], Proposal.prototype, "submittedAt", void 0);
+], Proposal.prototype, "submittedA", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => jobs_entity_1.Job),
     (0, typeorm_1.JoinColumn)({ name: 'jobId' }),

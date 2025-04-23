@@ -7,7 +7,8 @@ export declare class Proposal {
     clientId: number;
     message: string;
     status: string;
-    submittedAt: Date;
+    coverLetter: string;
+    submittedA: Date;
     job: Job;
     client: User;
     jobTitle: string;

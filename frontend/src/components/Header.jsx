@@ -12,7 +12,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         await logout();
-        navigate('/'); // or navigate('/login')
+        navigate('/');
     };
 
     return (
