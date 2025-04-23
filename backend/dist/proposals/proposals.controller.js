@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProposalsController = void 0;
 const common_1 = require("@nestjs/common");
 const proposals_service_1 = require("./proposals.service");
+const create_proposal_dto_1 = require("./dto/create-proposal.dto");
+const auth_guard_1 = require("../auth/auth.guard");
 let ProposalsController = class ProposalsController {
     constructor(proposalsService) {
         this.proposalsService = proposalsService;
     }
-    create(proposal) {
-        return this.proposalsService.create(proposal);
+    create(req, dto) {
+        return this.proposalsService.create(Object.assign(Object.assign({}, dto), { talentId: req.user.id }));
     }
     findAll() {
         return this.proposalsService.findAll();
@@ -40,19 +42,23 @@ let ProposalsController = class ProposalsController {
 };
 exports.ProposalsController = ProposalsController;
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, create_proposal_dto_1.CreateProposalDto]),
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)('client/:clientId'),
     __param(0, (0, common_1.Param)('clientId')),
     __metadata("design:type", Function),
@@ -60,6 +66,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "findByClient", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)('talent/:talentId'),
     __param(0, (0, common_1.Param)('talentId')),
     __metadata("design:type", Function),
@@ -67,6 +74,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "findByTalent", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Patch)(':id/status'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)('status')),
@@ -75,6 +83,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "updateStatus", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

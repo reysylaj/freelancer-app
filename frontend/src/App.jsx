@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Kryefaqja from "./pages/Kryefaqja";
 import Punetefundit from "./pages/Punetefundit";
@@ -20,11 +20,16 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import ProfileTalentMessenger from "./components/ProfileTalentMessenger.jsx";
 import ProfileClientMessenger from "./components/ProfileClientMessenger.jsx";
 
+
+import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedRoute from './utils/ProtectedRoute';
+
 function App() {
   return (
     <AuthProvider>
 
       <Routes>
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Kryefaqja />} />
         <Route path="/punet" element={<Punetefundit />} />
@@ -34,17 +39,16 @@ function App() {
         <Route path="/registering-as-client" element={<RegisteringAsClient />} />
         <Route path="/client-registration" element={<ClientSideRegistration />} />
         <Route path="/talent-registration" element={<TalentSideRegistration />} />
+        <Route path="/view-talent-profile/:id" element={<ViewTalentPublicProfile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
+        {/* Protected Routes (with role check) */}
         <Route path="/talent-profile/:id" element={<ProtectedRoute role="talent" element={<TalentProfile />} />} />
         <Route path="/client-profile/:id" element={<ProtectedRoute role="client" element={<ClientProfile />} />} />
+        <Route path="/create-job" element={<ProtectedRoute role="client" element={<ProfileClientCreatePostPage />} />} />
+        <Route path="/message-client/:id" element={<ProtectedRoute role="talent" element={<ProfileTalentMessenger />} />} />
+        <Route path="/message-talent/:id" element={<ProtectedRoute role="client" element={<ProfileClientMessenger />} />} />
 
-        <Route path="/view-talent-profile/:id" element={<ViewTalentPublicProfile />} />
-        <Route path="/message-client/:id" element={<ProfileTalentMessenger />} />
-        <Route path="/message-talent/:id" element={<ProfileClientMessenger />} />
-
-
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/create-job" element={<ProfileClientCreatePostPage />} />
       </Routes>
     </AuthProvider >
   );

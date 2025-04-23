@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesController = void 0;
 const common_1 = require("@nestjs/common");
 const messages_service_1 = require("./messages.service");
+const create_message_dto_1 = require("./dto/create-message.dto");
+const auth_guard_1 = require("../auth/auth.guard");
 let MessagesController = class MessagesController {
     constructor(messagesService) {
         this.messagesService = messagesService;
     }
-    sendMessage(data) {
-        return this.messagesService.send(data);
+    sendMessage(req, dto) {
+        return this.messagesService.send(Object.assign(Object.assign({}, dto), { sender: dto.sender }));
     }
     getChat(clientId, talentId) {
         return this.messagesService.findConversation(clientId, talentId);
@@ -31,13 +33,16 @@ let MessagesController = class MessagesController {
 };
 exports.MessagesController = MessagesController;
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", void 0)
 ], MessagesController.prototype, "sendMessage", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)(':clientId/:talentId'),
     __param(0, (0, common_1.Param)('clientId')),
     __param(1, (0, common_1.Param)('talentId')),
@@ -46,6 +51,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MessagesController.prototype, "getChat", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

@@ -16,6 +16,7 @@ exports.SavedController = void 0;
 const common_1 = require("@nestjs/common");
 const saved_service_1 = require("./saved.service");
 const auth_guard_1 = require("../auth/auth.guard");
+const save_item_dto_1 = require("./dto/save-item.dto");
 const users_service_1 = require("../users/users.service");
 let SavedController = class SavedController {
     constructor(savedService, userService) {
@@ -23,8 +24,6 @@ let SavedController = class SavedController {
         this.userService = userService;
     }
     async saveJob(req, body) {
-        if (!req.user)
-            throw new common_1.UnauthorizedException();
         return this.savedService.saveJob({
             talentId: req.user.id,
             jobId: body.jobId,
@@ -32,34 +31,26 @@ let SavedController = class SavedController {
         });
     }
     async saveProject(req, body) {
-        if (!req.user)
-            throw new common_1.UnauthorizedException();
         return this.savedService.saveProject({
             clientId: req.user.id,
             projectId: body.projectId,
             savedAt: new Date(),
         });
     }
-    async getSavedJobs(req) {
-        if (!req.user)
-            throw new common_1.UnauthorizedException();
+    getSavedJobs(req) {
         return this.savedService.getSavedJobsByTalent(req.user.id);
     }
-    async getSavedProjects(req) {
-        if (!req.user)
-            throw new common_1.UnauthorizedException();
+    getSavedProjects(req) {
         return this.savedService.getSavedProjectsByClient(req.user.id);
     }
-    async deleteSavedJob(id) {
+    deleteSavedJob(id) {
         return this.savedService.removeSavedJob(Number(id));
     }
-    async deleteSavedProject(id) {
+    deleteSavedProject(id) {
         return this.savedService.removeSavedProject(Number(id));
     }
     findByClient(req) {
-        if (!req.user)
-            throw new common_1.UnauthorizedException();
-        return this.savedService.findByClientId(Number(req.user.id));
+        return this.savedService.findByClientId(req.user.id);
     }
     getUser(id) {
         return this.userService.findById(id);
@@ -72,7 +63,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, save_item_dto_1.SaveItemDto]),
     __metadata("design:returntype", Promise)
 ], SavedController.prototype, "saveJob", null);
 __decorate([
@@ -81,7 +72,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, save_item_dto_1.SaveItemDto]),
     __metadata("design:returntype", Promise)
 ], SavedController.prototype, "saveProject", null);
 __decorate([
@@ -90,7 +81,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SavedController.prototype, "getSavedJobs", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
@@ -98,7 +89,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SavedController.prototype, "getSavedProjects", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
@@ -106,7 +97,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SavedController.prototype, "deleteSavedJob", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
@@ -114,7 +105,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SavedController.prototype, "deleteSavedProject", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

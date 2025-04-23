@@ -2,20 +2,19 @@ import { Controller, Post, Get, Delete, Body, Param, Req, UseGuards, Unauthorize
 import { SavedService } from './saved.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from '../auth/interfaces/request-with-user';
-import { UsersService } from '../users/users.service'; // ✅ Import it
+import { SaveItemDto } from './dto/save-item.dto';
+import { UsersService } from '../users/users.service';
 
 @Controller('saved')
 export class SavedController {
     constructor(
         private readonly savedService: SavedService,
-        private readonly userService: UsersService, // ✅ Inject here
+        private readonly userService: UsersService
     ) { }
 
-    // 🔹 Save a job (TALENT)
     @UseGuards(AuthGuard)
     @Post('job')
-    async saveJob(@Req() req: RequestWithUser, @Body() body: { jobId: number }) {
-        if (!req.user) throw new UnauthorizedException();
+    async saveJob(@Req() req: RequestWithUser, @Body() body: SaveItemDto) {
         return this.savedService.saveJob({
             talentId: req.user.id,
             jobId: body.jobId,
@@ -23,11 +22,9 @@ export class SavedController {
         });
     }
 
-    // 🔹 Save a project (CLIENT)
     @UseGuards(AuthGuard)
     @Post('project')
-    async saveProject(@Req() req: RequestWithUser, @Body() body: any) {
-        if (!req.user) throw new UnauthorizedException();
+    async saveProject(@Req() req: RequestWithUser, @Body() body: SaveItemDto) {
         return this.savedService.saveProject({
             clientId: req.user.id,
             projectId: body.projectId,
@@ -35,46 +32,38 @@ export class SavedController {
         });
     }
 
-    // 🔹 Get saved jobs for talent
     @UseGuards(AuthGuard)
     @Get('job')
-    async getSavedJobs(@Req() req: RequestWithUser) {
-        if (!req.user) throw new UnauthorizedException();
+    getSavedJobs(@Req() req: RequestWithUser) {
         return this.savedService.getSavedJobsByTalent(req.user.id);
     }
 
-    // 🔹 Get saved projects for client
     @UseGuards(AuthGuard)
     @Get('project')
-    async getSavedProjects(@Req() req: RequestWithUser) {
-        if (!req.user) throw new UnauthorizedException();
+    getSavedProjects(@Req() req: RequestWithUser) {
         return this.savedService.getSavedProjectsByClient(req.user.id);
     }
 
-    // 🔹 Remove saved job
     @UseGuards(AuthGuard)
     @Delete('job/:id')
-    async deleteSavedJob(@Param('id') id: string) {
+    deleteSavedJob(@Param('id') id: string) {
         return this.savedService.removeSavedJob(Number(id));
     }
 
-    // 🔹 Remove saved project
     @UseGuards(AuthGuard)
     @Delete('project/:id')
-    async deleteSavedProject(@Param('id') id: string) {
+    deleteSavedProject(@Param('id') id: string) {
         return this.savedService.removeSavedProject(Number(id));
     }
 
     @UseGuards(AuthGuard)
     @Get('client')
     findByClient(@Req() req: RequestWithUser) {
-        if (!req.user) throw new UnauthorizedException();
-        return this.savedService.findByClientId(Number(req.user.id));
+        return this.savedService.findByClientId(req.user.id);
     }
 
     @Get(':id')
     getUser(@Param('id') id: number) {
         return this.userService.findById(id);
     }
-
 }

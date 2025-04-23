@@ -1,9 +1,10 @@
 import { MessagesService } from './messages.service';
-import { Message } from './messages.entity';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { RequestWithUser } from '../auth/interfaces/request-with-user';
 export declare class MessagesController {
     private readonly messagesService;
     constructor(messagesService: MessagesService);
-    sendMessage(data: Partial<Message>): Promise<Message>;
-    getChat(clientId: number, talentId: number): Promise<Message[]>;
+    sendMessage(req: RequestWithUser, dto: CreateMessageDto): Promise<import("./messages.entity").Message>;
+    getChat(clientId: number, talentId: number): Promise<import("./messages.entity").Message[]>;
     delete(id: number): Promise<import("typeorm").DeleteResult>;
 }

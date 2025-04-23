@@ -6,12 +6,15 @@ import {
     logoutUser,
     getCurrentUser,
 } from '../services/authService';
+import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS AT THE TOP
+
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [authUser, setAuthUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // ✅ INIT NAVIGATION
 
     // ✅ Automatically check session from cookie on app load / refresh
     useEffect(() => {
@@ -56,8 +59,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await logoutUser(); // clears cookie
-        setAuthUser(null);
+        try {
+            await logoutUser(); // clears JWT cookie from backend
+            setAuthUser(null); // clears frontend context
+            navigate('/'); // ✅ REDIRECT TO HOMEPAGE
+        } catch (err) {
+            console.error("Logout failed:", err);
+        }
     };
 
     return (
