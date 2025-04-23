@@ -41,4 +41,7 @@ export class User {
     @Column({ nullable: true })
     jobsPosted!: number;
 
+    
+
+
 }

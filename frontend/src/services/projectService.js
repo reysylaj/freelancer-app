@@ -1,4 +1,3 @@
-//projectService.js
 import API from "./api";
 
 export const createProject = async (data) => {
@@ -12,12 +11,11 @@ export const getAllProjects = async () => {
 };
 
 export const getProjectsByTalentId = async (talentId) => {
-    const response = await API.get(`/projects/talent/${talentId}`, { withCredentials: true });
+    const response = await API.get(`/projects/talent/${talentId}`, { withCredentials: true }); // ✅ use backticks!
     return response.data;
 };
 
-
 export const deleteProject = async (id) => {
-    const response = await API.delete(`/projects/${id}`);
+    const response = await API.delete(`/projects/${id}`); // ✅ use backticks!
     return response.data;
 };

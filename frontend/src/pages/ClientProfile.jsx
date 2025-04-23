@@ -10,6 +10,8 @@ import ProfileClientWhoIs from "../components/ProfileClientWhoIs";
 import ProfileClientSavedPostsTalents from "../components/ProfileClientSavedPostsTalents";
 
 import ProfileClientCreatePostPopup from "../components/ProfileClientCreatePostPopup";
+import { getAllJobs } from "../services/jobService"; // ✅ make sure this exists
+import { useAuth } from "../context/AuthContext";
 
 
 import "../styles/ClientProfile.css";
@@ -17,13 +19,25 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const ClientProfile = () => {
-    const [jobs, setJobs] = useState([]);
+    const { authUser } = useAuth();
     const navigate = useNavigate(); // ✅ Hook for navigation
+    const [jobs, setJobs] = useState([]);
+
     const [jobRefreshTrigger, setJobRefreshTrigger] = useState(0);
 
     useEffect(() => {
-        setJobs(savedJobs);
-    }, []);
+        const fetchJobs = async () => {
+            try {
+                const allJobs = await getAllJobs();
+                const clientJobs = allJobs.filter(job => job.clientId === authUser?.id);
+                setJobs(clientJobs);
+            } catch (error) {
+                console.error("Failed to fetch jobs:", error);
+            }
+        };
+
+        fetchJobs();
+    }, [authUser?.id]);
 
     const handleNewJob = (newJob) => {
         const updatedJobs = [newJob, ...jobs];
@@ -38,8 +52,8 @@ const ClientProfile = () => {
     return (
         <>
             <Header />
- 
-            <Box className="client-profile-container"> 
+
+            <Box className="client-profile-container">
                 <ProfileClientHeader />
                 <ProfileClientWhoIs />
                 {/* ✅ Button to navigate to the Create Job Page */}

@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  IconButton,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Box, Typography, Card, CardContent,
+  IconButton, TextField, Select, MenuItem,
+  FormControl, InputLabel
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -19,6 +12,7 @@ import Footer from "../components/Footer";
 import TalentProfileViewJobBeforeSubmitProposal from "../components/TalentProfileViewJobBeforeSubmitProposal";
 import TalentProfileSendFinalSubmitProposal from "../components/TalentProfileSendFinalSubmitProposal";
 import "../styles/Punetefundit.css";
+
 import { getAllJobs } from "../services/jobService";
 import {
   saveJobToBackend,
@@ -26,7 +20,6 @@ import {
   getSavedJobs,
 } from "../services/savedJobService";
 import { useAuth } from "../context/AuthContext";
-
 
 const Punetefundit = () => {
   const [jobs, setJobs] = useState([]);
@@ -36,7 +29,6 @@ const Punetefundit = () => {
   const [openJobPopup, setOpenJobPopup] = useState(false);
   const [openProposalPopup, setOpenProposalPopup] = useState(false);
   const { authUser } = useAuth();
-
   const talentId = authUser?.id;
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,37 +42,31 @@ const Punetefundit = () => {
   useEffect(() => {
     fetchJobs();
 
-    // 👂 Listen to "jobPostedByClient" to refetch after posting
     const listener = () => fetchJobs();
     window.addEventListener("jobPostedByClient", listener);
-
-    return () => {
-      window.removeEventListener("jobPostedByClient", listener);
-    };
-  }, []);
-
+    return () => window.removeEventListener("jobPostedByClient", listener);
+  }, [authUser]);
 
   const fetchJobs = async () => {
     try {
       const jobsFromBackend = await getAllJobs();
       setJobs(jobsFromBackend);
 
-      if (storedUser && storedUser.role === "talent") {
-        const saved = await getSavedJobs(); // ✅ Only fetch if talent
-        setSavedJobs(saved);
-
-        const userLikedJobs = storedLikedJobs.filter(job => job.talentId === storedUser.id);
-        setLikedJobs(userLikedJobs);
-      } else {
-        setSavedJobs([]); // 👈 or skip it
+      if (authUser?.role === "talent") {
+        const saved = await getSavedJobs();
+        const mySaved = saved.filter((s) => s.talentId === authUser.id);
+        setSavedJobs(mySaved);
       }
-
     } catch (error) {
       console.error("❌ Failed to load jobs:", error);
     }
   };
 
   const handleOpenJobPopup = (job) => {
+    if (!authUser) {
+      alert("Krijo nje llogari per me shume.");
+      return;
+    }
     setSelectedJob(job);
     setOpenJobPopup(true);
   };
@@ -103,36 +89,21 @@ const Punetefundit = () => {
   const handleSaveJob = async (job) => {
     try {
       const alreadySaved = savedJobs.find(j => j.jobId === job.id);
-
       if (alreadySaved) {
         await removeSavedJobFromBackend(alreadySaved.id);
-        const updated = savedJobs.filter(j => j.jobId !== job.id);
-        setSavedJobs(updated);
-        window.dispatchEvent(new Event("savedJobsUpdated"));
+        setSavedJobs(savedJobs.filter(j => j.jobId !== job.id));
       } else {
-        const newSaved = await saveJobToBackend({ jobId: job.id });
-        const updated = [...savedJobs, newSaved];
-        setSavedJobs(updated);
-        window.dispatchEvent(new Event("savedJobsUpdated"));
+        const newSaved = await saveJobToBackend({ jobId: job.id, talentId });
+        setSavedJobs([...savedJobs, newSaved]);
       }
+      window.dispatchEvent(new Event("savedJobsUpdated"));
     } catch (error) {
       console.error("❌ Error saving job:", error.response?.data || error.message);
     }
   };
 
-
-
   const handleFilterChange = (field, value) => {
-    const updatedFilters = { ...filters, [field]: value };
-    setFilters(updatedFilters);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
+    setFilters({ ...filters, [field]: value });
   };
 
   const filteredJobs = jobs
@@ -141,55 +112,43 @@ const Punetefundit = () => {
       job.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter(job =>
-      (filters.jobType === "" || job.jobType === filters.jobType) &&
-      (filters.seniorityLevel === "" || job.seniorityLevel === filters.seniorityLevel) &&
-      (filters.workMode === "" || job.workMode === filters.workMode)
+      (!filters.jobType || job.jobType === filters.jobType) &&
+      (!filters.seniorityLevel || job.seniorityLevel === filters.seniorityLevel) &&
+      (!filters.workMode || job.workMode === filters.workMode)
     )
-    .sort((a, b) => (sortOption === "recent" ? b.id - a.id : a.id - b.id));
-
-  const handleLikeJob = (job) => {
-    let updatedLikedJobs;
-    if (likedJobs.some(likedJob => likedJob.id === job.id)) {
-      updatedLikedJobs = likedJobs.filter(likedJob => likedJob.id !== job.id);
-    } else {
-      updatedLikedJobs = [...likedJobs, job];
-    }
-    setLikedJobs(updatedLikedJobs);
-  };
+    .sort((a, b) => sortOption === "recent" ? b.id - a.id : a.id - b.id);
 
   return (
     <>
       <Header />
-      <div className="punet-fundit-title">
-        <h1 className="punet-h1">Punet e fundit</h1>
-        <p className="punet-p1">
-          Ne kete faqe do gjeni te gjitha postimet e fundit qe kane bere klientet dhe qe kerkojne talente me profile te ndryshem.
-        </p>
-      </div>
+      <Box className="punet-fundit-title">
+        <h1 className="punet-h1">Punët e fundit</h1>
+        <p className="punet-p1">Shih postimet më të fundit nga klientët.</p>
+      </Box>
+
       <Box className="punetefundit-container">
+        {/* 🔎 Search and sort */}
         <Box className="search-sort-container">
           <TextField
             fullWidth
-            variant="outlined"
             placeholder="Search jobs..."
             value={searchQuery}
-            onChange={handleSearchChange}
-            InputProps={{ startAdornment: <SearchIcon style={{ marginRight: "8px" }} /> }}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{ startAdornment: <SearchIcon style={{ marginRight: 8 }} /> }}
           />
-
-          <FormControl fullWidth variant="outlined">
+          <FormControl fullWidth>
             <InputLabel>Sort By</InputLabel>
-            <Select value={sortOption} onChange={handleSortChange}>
+            <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
               <MenuItem value="recent">Most Recent</MenuItem>
               <MenuItem value="oldest">Oldest</MenuItem>
             </Select>
           </FormControl>
         </Box>
 
+        {/* 🎯 Filters */}
         <Box className="content-container">
           <Box className="filters-container">
-            <Typography variant="h6">Filtroni sipas deshires</Typography>
-
+            <Typography variant="h6">Filtro sipas:</Typography>
             <FormControl fullWidth>
               <InputLabel>Job Type</InputLabel>
               <Select value={filters.jobType} onChange={(e) => handleFilterChange("jobType", e.target.value)}>
@@ -201,9 +160,8 @@ const Punetefundit = () => {
                 <MenuItem value="Freelance">Freelance</MenuItem>
               </Select>
             </FormControl>
-
             <FormControl fullWidth>
-              <InputLabel>Seniority Level</InputLabel>
+              <InputLabel>Seniority</InputLabel>
               <Select value={filters.seniorityLevel} onChange={(e) => handleFilterChange("seniorityLevel", e.target.value)}>
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value="Intern">Intern</MenuItem>
@@ -212,47 +170,34 @@ const Punetefundit = () => {
                 <MenuItem value="Senior">Senior</MenuItem>
               </Select>
             </FormControl>
-
             <FormControl fullWidth>
               <InputLabel>Work Mode</InputLabel>
               <Select value={filters.workMode} onChange={(e) => handleFilterChange("workMode", e.target.value)}>
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value="On-Site">On-Site</MenuItem>
                 <MenuItem value="Remote">Remote</MenuItem>
+                <MenuItem value="On-Site">On-Site</MenuItem>
                 <MenuItem value="Hybrid">Hybrid</MenuItem>
               </Select>
             </FormControl>
           </Box>
 
+          {/* 📦 Jobs */}
           <Box className="jobs-container">
             {filteredJobs.length === 0 ? (
               <Typography className="no-jobs">No jobs available.</Typography>
             ) : (
               filteredJobs.map((job) => (
-                <Card key={job.id} className="job-card" onClick={() => {
-                  if (!authUser) {
-                    alert("Krijo nje llogari per me shume.");
-                    return;
-                  }
-                  handleOpenJobPopup(job);
-                }}>
-
+                <Card key={job.id} className="job-card" onClick={() => handleOpenJobPopup(job)}>
                   <CardContent>
                     <Typography variant="h6">{job.title}</Typography>
-                    <Typography className="job-description">{job.description}</Typography>
-                    <Typography className="job-user"> Company ID: {job.clientId}</Typography>
-                    <Typography className="job-budget"> Budget: {job.budget} ALL</Typography>
-                    <Typography className="job-workMode"> Work Mode: {job.workMode}</Typography>
-                    <Typography className="job-type"> Job Type: {job.jobType}</Typography>
-                    <Typography className="job-seniorityLevel"> Seniority Level: {job.seniorityLevel}</Typography>
-
-                    <Box className="like-container">
+                    <Typography>{job.description}</Typography>
+                    <Typography>Budget: {job.budget} ALL</Typography>
+                    <Typography>Type: {job.jobType}</Typography>
+                    <Typography>Level: {job.seniorityLevel}</Typography>
+                    <Typography>Mode: {job.workMode}</Typography>
+                    <Box>
                       <IconButton onClick={(e) => { e.stopPropagation(); handleSaveJob(job); }}>
-                        {savedJobs.some(savedJob => savedJob.jobId === job.id) ? (
-                          <FavoriteIcon color="error" />
-                        ) : (
-                          <FavoriteBorderIcon />
-                        )}
+                        {savedJobs.some(s => s.jobId === job.id) ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
                       </IconButton>
                     </Box>
                   </CardContent>
@@ -263,6 +208,7 @@ const Punetefundit = () => {
         </Box>
       </Box>
 
+      {/* 🔍 Job Detail & Proposal */}
       <TalentProfileViewJobBeforeSubmitProposal job={selectedJob} open={openJobPopup} onClose={handleCloseJobPopup} onSendProposal={handleOpenProposalPopup} />
       <TalentProfileSendFinalSubmitProposal job={selectedJob} open={openProposalPopup} onClose={handleCloseProposalPopup} />
 

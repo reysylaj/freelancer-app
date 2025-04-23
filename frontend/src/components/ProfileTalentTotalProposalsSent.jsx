@@ -10,30 +10,37 @@ import {
     TableRow,
     Paper,
     Select,
-    MenuItem
+    MenuItem,
 } from "@mui/material";
 import { getProposalsByTalentId } from "../services/proposalService";
 import "../styles/ProfileTalentTotalProposalsSent.css";
+import { useAuth } from "../context/AuthContext";
 
 const ProfileTalentTotalProposalsSent = () => {
     const [proposals, setProposals] = useState([]);
     const [filter, setFilter] = useState("All");
 
     const { authUser } = useAuth();
-    const talentId = storedUser.id;
+    const talentId = authUser?.id;
+
+    const fetchProposals = async () => {
+        try {
+            const data = await getProposalsByTalentId(talentId);
+            setProposals(data);
+        } catch (error) {
+            console.error("Error loading proposals:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchProposals = async () => {
-            try {
-                const data = await getProposalsByTalentId(talentId);
-                setProposals(data);
-            } catch (error) {
-                console.error("Error loading proposals:", error);
-            }
-        };
-
         fetchProposals();
     }, [talentId]);
+
+    useEffect(() => {
+        const listener = () => fetchProposals();
+        window.addEventListener("proposalSent", listener);
+        return () => window.removeEventListener("proposalSent", listener);
+    }, []);
 
     const filteredProposals =
         filter === "All"
@@ -75,13 +82,13 @@ const ProfileTalentTotalProposalsSent = () => {
                             filteredProposals.map((proposal) => (
                                 <TableRow key={proposal.id}>
                                     <TableCell>{proposal.jobTitle}</TableCell>
-                                    <TableCell>{proposal.clientName}</TableCell>
+                                    <TableCell>{proposal.clientName || "Unknown"}</TableCell>
                                     <TableCell>
-                                        {new Date(proposal.createdAt).toLocaleDateString()}
+                                        {proposal.submittedAt
+                                            ? new Date(proposal.submittedAt).toLocaleDateString()
+                                            : "Unknown"}
                                     </TableCell>
-                                    <TableCell
-                                        className={`status-cell ${proposal.status.toLowerCase()}`}
-                                    >
+                                    <TableCell className={`status-cell ${proposal.status.toLowerCase()}`}>
                                         {proposal.status}
                                     </TableCell>
                                 </TableRow>

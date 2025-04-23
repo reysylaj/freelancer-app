@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../styles/ProfileClientSavedJobs.css";
+import { useAuth } from "../context/AuthContext";
 
 const ProfileClientSavedJobs = () => {
     const [savedJobs, setSavedJobs] = useState([]);
@@ -26,7 +27,7 @@ const ProfileClientSavedJobs = () => {
         setSavedJobs(updatedJobs);
 
         const { authUser } = useAuth();
-        const clientId = storedUser.id;
+        const talentId = authUser?.id;
 
         allSavedJobs[clientId] = updatedJobs;
     };

@@ -41,6 +41,13 @@ let UsersService = class UsersService {
     async findOne(id) {
         return this.usersRepository.findOneBy({ id });
     }
+    async updateUser(id, updateData) {
+        await this.usersRepository.update(id, updateData);
+        const updatedUser = await this.findOne(id);
+        if (!updatedUser)
+            throw new Error(`User with ID ${id} not found`);
+        return updatedUser;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

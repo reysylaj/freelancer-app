@@ -14,8 +14,8 @@ const ProfileClientWhoIs = () => {
     useEffect(() => {
         const fetchIntro = async () => {
             try {
-                const data = await getClientById(clientId);
-                setIntro(data.bio || "");
+                const response = await getClientById(clientId);
+                setIntro(response.data.bio || ""); // ✅ .data.bio instead of just .bio
             } catch (err) {
                 console.error("Failed to load intro:", err);
             }

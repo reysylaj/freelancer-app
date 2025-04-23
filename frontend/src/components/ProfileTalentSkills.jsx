@@ -3,40 +3,46 @@ import { Box, Typography, TextField, Button, Chip, IconButton } from "@mui/mater
 import EditIcon from "@mui/icons-material/Edit";
 import "../styles/ProfileTalentSkills.css";
 import { useAuth } from "../context/AuthContext";
-import { getClientById, updateClientProfile } from "../services/clientService"; // ✅ your service
+import { getClientById, updateClientProfile } from "../services/clientService";
 
-const ProfileTalentSkills = () => {
+const ProfileTalentSkills = ({ user = null, readOnly = false }) => {
     const { authUser } = useAuth();
-    const talentId = authUser?.id;
+    const isPublicView = !!user;
+    const talent = isPublicView ? user : authUser;
+    const talentId = talent?.id;
 
     const [bio, setBio] = useState("");
     const [skills, setSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [editingBio, setEditingBio] = useState(false);
 
-    // ✅ Load from backend
     useEffect(() => {
-        const fetchTalentProfile = async () => {
+        const loadData = async () => {
             try {
-                const { data } = await getClientById(talentId); // this fetches full User
-                setBio(data.bio || "");
-                setSkills(data.skills ? data.skills.split(",") : []);
+                if (isPublicView) {
+                    setBio(user.bio || "");
+                    setSkills(user.skills ? user.skills.split(",") : []);
+                } else if (talentId) {
+                    const { data } = await getClientById(talentId);
+                    setBio(data.bio || "");
+                    setSkills(data.skills ? data.skills.split(",") : []);
+                }
             } catch (err) {
-                console.error("Failed to load talent profile:", err);
+                console.error("❌ Failed to load talent data:", err);
             }
         };
-        if (talentId) fetchTalentProfile();
-    }, [talentId]);
+
+        loadData();
+    }, [talentId, user]);
 
     const handleAddSkill = async () => {
-        if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-            const updatedSkills = [...skills, newSkill.trim()];
-            setSkills(updatedSkills);
-            setNewSkill("");
-            await updateClientProfile(talentId, {
-                skills: updatedSkills.join(","),
-            });
-        }
+        if (!newSkill.trim() || skills.includes(newSkill.trim())) return;
+        const updatedSkills = [...skills, newSkill.trim()];
+        setSkills(updatedSkills);
+        setNewSkill("");
+        await updateClientProfile(talentId, {
+            skills: updatedSkills.join(","),
+        });
     };
 
     const handleRemoveSkill = async (skillToRemove) => {
@@ -60,9 +66,11 @@ const ProfileTalentSkills = () => {
             <Box className="bio-section">
                 <Typography variant="h5" className="bio-title">
                     About Me
-                    <IconButton onClick={handleEditBio} className="edit-icon">
-                        <EditIcon />
-                    </IconButton>
+                    {!readOnly && !isPublicView && (
+                        <IconButton onClick={handleEditBio} className="edit-icon">
+                            <EditIcon />
+                        </IconButton>
+                    )}
                 </Typography>
                 {editingBio ? (
                     <TextField
@@ -75,7 +83,7 @@ const ProfileTalentSkills = () => {
                     />
                 ) : (
                     <Typography variant="body1" className="bio-text">
-                        {bio}
+                        {bio || "No bio provided"}
                     </Typography>
                 )}
             </Box>
@@ -88,7 +96,7 @@ const ProfileTalentSkills = () => {
                         <Chip
                             key={index}
                             label={skill}
-                            onDelete={() => handleRemoveSkill(skill)}
+                            onDelete={!readOnly && !isPublicView ? () => handleRemoveSkill(skill) : undefined}
                             className="skill-chip"
                         />
                     ))
@@ -98,19 +106,21 @@ const ProfileTalentSkills = () => {
             </Box>
 
             {/* Add Skill Section */}
-            <Box className="add-skill-container">
-                <TextField
-                    label="Add a skill"
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
-                    fullWidth
-                    className="skill-input"
-                />
-                <Button onClick={handleAddSkill} className="add-skill-btn">
-                    ADD SKILL
-                </Button>
-            </Box>
+            {!readOnly && !isPublicView && (
+                <Box className="add-skill-container">
+                    <TextField
+                        label="Add a skill"
+                        value={newSkill}
+                        onChange={(e) => setNewSkill(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
+                        fullWidth
+                        className="skill-input"
+                    />
+                    <Button onClick={handleAddSkill} className="add-skill-btn">
+                        ADD SKILL
+                    </Button>
+                </Box>
+            )}
         </Box>
     );
 };

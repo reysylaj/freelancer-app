@@ -9,4 +9,7 @@ export declare class User {
     bio: string;
     skills: string;
     profilePicture: string;
+    coverImage: string;
+    preferredLink: string;
+    jobsPosted: number;
 }

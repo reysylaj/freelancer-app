@@ -33,7 +33,7 @@ const TalentProfile = () => {
 
     const addPost = () => {
         window.dispatchEvent(new Event("projectUpdated"));
-    };
+    }; 
 
     return (
         <>

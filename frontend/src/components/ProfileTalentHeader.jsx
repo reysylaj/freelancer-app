@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "../styles/ProfileTalentHeader.css";
+import { useAuth } from "../context/AuthContext";
 
-const ProfileTalentHeader = () => {
+const ProfileTalentHeader = ({ user: externalUser = null }) => {
     const { authUser } = useAuth();
+    const isPublic = !!externalUser;
+    const userData = isPublic ? externalUser : authUser;
 
-    const [user, setUser] = useState(authUser);
+    const [user, setUser] = useState(userData);
 
-    // ✅ Handle Profile Picture Upload
+    useEffect(() => {
+        setUser(userData);
+    }, [userData]);
+
+    // ✅ Upload Profile Picture
     const handleProfilePictureChange = (event) => {
+        if (isPublic) return;
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -21,8 +29,9 @@ const ProfileTalentHeader = () => {
         }
     };
 
-    // ✅ Handle Cover Image Upload
+    // ✅ Upload Cover Image
     const handleCoverImageChange = (event) => {
+        if (isPublic) return;
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -33,15 +42,18 @@ const ProfileTalentHeader = () => {
         }
     };
 
-    // ✅ Delete Profile Picture
+    // ✅ Delete profile/cover
     const handleDeleteProfilePicture = () => {
+        if (isPublic) return;
         setUser((prev) => ({ ...prev, profilePicture: null }));
     };
 
-    // ✅ Delete Cover Image
     const handleDeleteCoverImage = () => {
+        if (isPublic) return;
         setUser((prev) => ({ ...prev, coverImage: null }));
     };
+
+    if (!user) return null;
 
     return (
         <Box className="profile-header">
@@ -53,40 +65,46 @@ const ProfileTalentHeader = () => {
                     className="cover-image"
                 />
 
-                {/* Upload Cover Button */}
-                <IconButton component="label" className="edit-cover-btn">
-                    <CameraAltIcon />
-                    <input type="file" hidden onChange={handleCoverImageChange} />
-                </IconButton>
-
-                {/* Delete Cover Button */}
-                {user.coverImage && (
-                    <IconButton className="delete-cover-btn" onClick={handleDeleteCoverImage}>
-                        <DeleteIcon />
-                    </IconButton>
+                {/* Upload/Delete Cover */}
+                {!isPublic && (
+                    <>
+                        <IconButton component="label" className="edit-cover-btn">
+                            <CameraAltIcon />
+                            <input type="file" hidden onChange={handleCoverImageChange} />
+                        </IconButton>
+                        {user.coverImage && (
+                            <IconButton className="delete-cover-btn" onClick={handleDeleteCoverImage}>
+                                <DeleteIcon />
+                            </IconButton>
+                        )}
+                    </>
                 )}
             </Box>
 
             {/* Profile Info */}
             <Box className="profile-info">
                 <Box className="avatar-container">
-                    <Avatar src={user.profilePicture || "/default-avatar.png"} className="profile-avatar" />
+                    <Avatar
+                        src={user.profilePicture || "/default-avatar.png"}
+                        className="profile-avatar"
+                    />
 
-                    {/* Upload Profile Picture Button */}
-                    <IconButton component="label" className="edit-avatar-btn">
-                        <CameraAltIcon />
-                        <input type="file" hidden onChange={handleProfilePictureChange} />
-                    </IconButton>
-
-                    {/* Delete Profile Picture Button */}
-                    {user.profilePicture && (
-                        <IconButton className="delete-avatar-btn" onClick={handleDeleteProfilePicture}>
-                            <DeleteIcon />
-                        </IconButton>
+                    {/* Upload/Delete Avatar */}
+                    {!isPublic && (
+                        <>
+                            <IconButton component="label" className="edit-avatar-btn">
+                                <CameraAltIcon />
+                                <input type="file" hidden onChange={handleProfilePictureChange} />
+                            </IconButton>
+                            {user.profilePicture && (
+                                <IconButton className="delete-avatar-btn" onClick={handleDeleteProfilePicture}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            )}
+                        </>
                     )}
                 </Box>
 
-                {/* User Details */}
                 <Box className="details-container">
                     <Typography variant="h4">{user.name} {user.surname}</Typography>
                     <Typography variant="h6" className="role-text">{user.role}</Typography>
@@ -95,7 +113,6 @@ const ProfileTalentHeader = () => {
                 </Box>
             </Box>
 
-            {/* Jobs Confirmed */}
             <Box className="jobs-confirmed">
                 <Typography variant="h6">Total Jobs Confirmed: {user.jobsConfirmed || 0}</Typography>
             </Box>

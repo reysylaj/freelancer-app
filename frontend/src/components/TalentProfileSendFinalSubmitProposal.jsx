@@ -8,16 +8,17 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import { createProposal } from "../services/proposalService"; // ✅ Use backend
+import { createProposal } from "../services/proposalService";
+import { useAuth } from "../context/AuthContext";
 
 const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
+    const { authUser } = useAuth();
     const [coverLetter, setCoverLetter] = useState("");
     const [file, setFile] = useState(null);
 
-    if (!job) return null;
+    if (!job || !job.job || !authUser) return null;
 
-    const { authUser } = useAuth();
-    const clientId = job.clientId;
+    const realJob = job.job;
 
     const handleFileUpload = (event) => {
         setFile(event.target.files[0]);
@@ -27,14 +28,14 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
         if (!coverLetter.trim()) return;
 
         const newProposal = {
-            jobId: job.id,
-            jobTitle: job.title,
-            clientId: job.clientId,
-            clientName: job.user || "Unknown Client",
-            talentId: authUser?.id,
-            talentName: authUser?.name,
-            talentProfilePic: authUser?.profilePicture,
-            coverLetter: coverLetter,
+            jobId: realJob.id,
+            jobTitle: realJob.title,
+            clientId: realJob.clientId,
+            clientName: realJob.clientName || "Unknown Client",
+            talentId: authUser.id,
+            talentName: authUser.name,
+            talentProfilePic: authUser.profilePicture,
+            message: coverLetter,
             status: "Pending",
         };
 
@@ -43,6 +44,7 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
             alert("✅ Proposal submitted successfully!");
             setCoverLetter("");
             setFile(null);
+            window.dispatchEvent(new Event("proposalSent"));
             onClose();
         } catch (err) {
             console.error("❌ Failed to send proposal:", err);
@@ -52,7 +54,7 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Send Proposal for {job?.title || "Unknown Job"}</DialogTitle>
+            <DialogTitle>Send Proposal for {realJob.title || "Unknown Job"}</DialogTitle>
             <DialogContent>
                 <Typography>Write a cover letter explaining why you are the best fit:</Typography>
                 <TextField

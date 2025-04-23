@@ -17,6 +17,8 @@ import TalentSideRegistration from "./pages/TalentSideRegistration";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from './utils/ProtectedRoute';
 
+import ProfileTalentMessenger from "./components/ProfileTalentMessenger.jsx";
+import ProfileClientMessenger from "./components/ProfileClientMessenger.jsx";
 
 function App() {
   return (
@@ -37,7 +39,8 @@ function App() {
         <Route path="/client-profile/:id" element={<ProtectedRoute role="client" element={<ClientProfile />} />} />
 
         <Route path="/view-talent-profile/:id" element={<ViewTalentPublicProfile />} />
-
+        <Route path="/message-client/:id" element={<ProfileTalentMessenger />} />
+        <Route path="/message-talent/:id" element={<ProfileClientMessenger />} />
 
 
         <Route path="/forgot-password" element={<ForgotPassword />} />

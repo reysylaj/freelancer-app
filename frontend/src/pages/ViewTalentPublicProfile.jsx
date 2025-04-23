@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { getUserById } from "../services/userService";
 import { getProjectsByTalentId } from "../services/projectService";
+import { useAuth } from "../context/AuthContext";
 
 const ViewTalentPublicProfile = () => {
     const { id } = useParams();
@@ -20,8 +21,8 @@ const ViewTalentPublicProfile = () => {
                 const user = await getUserById(id);
                 setTalent(user);
 
-                const proj = await getProjectsByTalentId(id);
-                setProjects(proj); // ✅ real-time projects
+                const proj = await getProjectsByTalentId(Number(id)); // ✅ fix here
+                setProjects(proj);
             } catch (err) {
                 console.error("Error loading public profile:", err);
             }
@@ -29,6 +30,8 @@ const ViewTalentPublicProfile = () => {
 
         fetchTalentData();
     }, [id]);
+
+
 
     if (!talent) {
         return <Typography variant="h5">Talent not found</Typography>;

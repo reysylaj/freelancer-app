@@ -2,31 +2,28 @@ import { useState, useEffect } from "react";
 import {
     Box,
     Typography,
-    List,
-    ListItem,
-    ListItemText,
-    Avatar,
     TextField,
-    Button,
+    Button
 } from "@mui/material";
 import "../styles/ProfileTalentMessenger.css";
 import { getConversation, sendMessage } from "../services/messageService";
+import { useAuth } from "../context/AuthContext";
+import { useParams } from "react-router-dom";
 
 const ProfileTalentMessenger = () => {
     const { authUser } = useAuth();
     const talentId = authUser?.id;
 
-    const [conversations, setConversations] = useState([]); // Optional if you list clients later
+    const { id: selectedClientId } = useParams(); // ✅ Grab from route
     const [selectedChat, setSelectedChat] = useState(null);
     const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
-
 
     useEffect(() => {
         if (selectedClientId && talentId) {
             loadMessages(talentId, selectedClientId);
         }
-    }, [selectedClientId]);
+    }, [selectedClientId, talentId]);
 
     const loadMessages = async (talentId, clientId) => {
         try {
@@ -34,7 +31,7 @@ const ProfileTalentMessenger = () => {
             setMessages(data);
             setSelectedChat({
                 clientId,
-                clientName: selectedClientName || "Client",
+                clientName: `Client #${clientId}`,
                 clientAvatar: "/default-avatar.png",
             });
         } catch (error) {

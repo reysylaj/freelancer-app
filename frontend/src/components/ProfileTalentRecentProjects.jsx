@@ -12,6 +12,8 @@ const ITEMS_PER_PAGE = 4;
 
 const ProfileTalentRecentProjects = ({ posts = null }) => {
     const { authUser } = useAuth();
+    const talentId = authUser?.id;
+
     const [projects, setProjects] = useState([]);
     const [paginated, setPaginated] = useState([]);
     const [search, setSearch] = useState("");
@@ -20,25 +22,6 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
     const [openPopup, setOpenPopup] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
 
-    const loadProjects = async () => {
-        try {
-            const data = posts || await getProjectsByTalentId(authUser?.id);
-            const sorted = data.sort((a, b) =>
-                sortOrder === "recent"
-                    ? new Date(b.createdAt) - new Date(a.createdAt)
-                    : new Date(a.createdAt) - new Date(b.createdAt)
-            );
-            const filtered = sorted.filter(p =>
-                p.title?.toLowerCase().includes(search.toLowerCase()) ||
-                p.description?.toLowerCase().includes(search.toLowerCase())
-            );
-            setProjects(filtered);
-            updatePage(1, filtered);
-        } catch (err) {
-            console.error("Failed loading recent projects:", err);
-        }
-    };
-
     const updatePage = (pg, list = projects) => {
         const start = (pg - 1) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
@@ -46,15 +29,39 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
         setPage(pg);
     };
 
-    useEffect(() => {
-        loadProjects();
-        const listener = () => loadProjects();
-        window.addEventListener("projectUpdated", listener);
-        return () => window.removeEventListener("projectUpdated", listener);
-    }, [authUser?.id, posts]);
+    const applyFilters = (rawProjects) => {
+        const sorted = rawProjects.sort((a, b) =>
+            sortOrder === "recent"
+                ? new Date(b.createdAt) - new Date(a.createdAt)
+                : new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        const filtered = sorted.filter(p =>
+            p.title?.toLowerCase().includes(search.toLowerCase()) ||
+            p.description?.toLowerCase().includes(search.toLowerCase())
+        );
+        setProjects(filtered);
+        updatePage(1, filtered);
+    };
 
     useEffect(() => {
-        updatePage(1);
+        const load = async () => {
+            if (posts) {
+                applyFilters(posts);
+            } else {
+                try {
+                    const data = await getProjectsByTalentId(talentId);
+                    applyFilters(data);
+                } catch (err) {
+                    console.error("❌ Failed loading recent projects:", err);
+                }
+            }
+        };
+
+        load();
+    }, [posts, talentId]);
+
+    useEffect(() => {
+        applyFilters(projects); // Reapply sort + search to existing list
     }, [search, sortOrder]);
 
     return (
@@ -100,9 +107,17 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
                 ))
             )}
 
-            <Pagination count={Math.ceil(projects.length / ITEMS_PER_PAGE)} page={page} onChange={(e, v) => updatePage(v)} />
+            <Pagination
+                count={Math.ceil(projects.length / ITEMS_PER_PAGE)}
+                page={page}
+                onChange={(e, v) => updatePage(v)}
+            />
 
-            <ProfileTalentViewPostPopup post={selectedProject} open={openPopup} onClose={() => setOpenPopup(false)} />
+            <ProfileTalentViewPostPopup
+                post={selectedProject}
+                open={openPopup}
+                onClose={() => setOpenPopup(false)}
+            />
         </Box>
     );
 };

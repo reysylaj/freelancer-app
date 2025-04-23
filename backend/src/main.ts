@@ -21,11 +21,16 @@ async function bootstrap() {
 
     // ✅ Use class-validator globally
     app.useGlobalPipes(new ValidationPipe({
+        
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true, // 👈 important for @Type to work!
+        
     }));
 
     await app.listen(3000);
+
+    
 }
+
 bootstrap();

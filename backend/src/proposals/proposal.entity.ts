@@ -17,14 +17,17 @@ export class Proposal {
     @Column()
     clientId!: number;
 
-    @Column('text')
+    @Column({ nullable: false })
     message!: string;
 
     @Column()
     status!: string;
 
-    @CreateDateColumn()
-    submittedAt!: Date;
+    @Column({ type: 'text' })
+    coverLetter!: string;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    submittedA!: Date;
 
     // Relationships
     @ManyToOne(() => Job)

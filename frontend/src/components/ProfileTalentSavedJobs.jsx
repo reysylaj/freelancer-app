@@ -8,12 +8,15 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import TalentProfileViewJobBeforeSubmitProposal from "../components/TalentProfileViewJobBeforeSubmitProposal"; // ✅ First Popup
 import TalentProfileSendFinalSubmitProposal from "../components/TalentProfileSendFinalSubmitProposal"; // ✅ Second Popup
 import { getSavedJobs, removeSavedJobFromBackend } from "../services/savedJobService";
+import { useAuth } from "../context/AuthContext"; // ✅ add this if missing
 
 import "../styles/ProfileTalentSavedJobs.css";
 
 const ITEMS_PER_PAGE = 4;
 
 const ProfileTalentSavedJobs = () => {
+    const { authUser } = useAuth();
+    const talentId = authUser?.id;
     const [likedJobs, setLikedJobs] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [paginatedJobs, setPaginatedJobs] = useState([]);
@@ -27,11 +30,8 @@ const ProfileTalentSavedJobs = () => {
 
     useEffect(() => {
         const fetchSaved = async () => {
-            const { authUser } = useAuth();
-            const talentId = authUser?.id;
-
             try {
-                const savedFromBackend = await getSavedJobs(); // ✅ No need to pass talentId
+                const savedFromBackend = await getSavedJobs(talentId); // Pass it if needed
                 setLikedJobs(savedFromBackend);
                 updatePaginatedJobs(1, savedFromBackend);
             } catch (error) {
@@ -39,12 +39,12 @@ const ProfileTalentSavedJobs = () => {
             }
         };
 
-        fetchSaved(); // Initial load
+        fetchSaved();
 
         const handleSavedJobsUpdate = () => fetchSaved();
         window.addEventListener("savedJobsUpdated", handleSavedJobsUpdate);
         return () => window.removeEventListener("savedJobsUpdated", handleSavedJobsUpdate);
-    }, []);
+    }, [talentId]); // 🔁 add dependency if needed
 
 
 
@@ -111,29 +111,38 @@ const ProfileTalentSavedJobs = () => {
                                 {/* 🔹 User Info */}
                                 <Box display="flex" alignItems="center">
                                     <Avatar src="/default-avatar.png" className="user-avatar" />
-                                    <Box>
-                                        <Typography variant="h6">{job.user || "Unknown User"}</Typography>
-                                        <Typography variant="caption" color="textSecondary">{job.date || "No Date"}</Typography>
+                                    <Box ml={2}>
+                                        <Typography variant="h6">Client ID: {job.job?.clientId || "Unknown"}</Typography>
+                                        <Typography variant="caption" color="textSecondary">
+                                            Saved at: {new Date(job.savedAt).toLocaleDateString() || "No Date"}
+                                        </Typography>
                                     </Box>
                                 </Box>
 
                                 {/* 🔹 Job Title */}
-                                <Typography>{job.job.title}</Typography>
+                                <Typography variant="h6" className="job-title">
+                                    {job.job?.title || "Untitled Job"}
+                                </Typography>
 
                                 {/* 🔹 Job Budget */}
-                                <Typography className="job-budget">💰 Budget: {job.job?.budget || "N/A"} ALL</Typography>
+                                <Typography className="job-budget">
+                                    💰 Budget: {job.job?.budget || "N/A"} ALL
+                                </Typography>
 
                                 {/* 🔹 Job Work Mode & Type */}
-                                <Typography className="job-details"><strong>Work Mode:</strong> {job.job?.workMode}</Typography>
-                                <Typography className="job-details"><strong>Job Type:</strong> {job.job?.jobType}</Typography>
+                                <Typography className="job-workMode"><strong>Work Mode:</strong> {job.job?.workMode || "N/A"}</Typography>
+                                <Typography className="job-type"><strong>Job Type:</strong> {job.job?.jobType || "N/A"}</Typography>
+                                <Typography className="job-seniorityLevel"><strong>Seniority Level:</strong> {job.job?.seniorityLevel || "N/A"}</Typography>
 
                                 {/* 🔹 Job Description */}
                                 <Typography className="job-description">
-                                    {job.description ? job.description.replace(/<[^>]+>/g, "").substring(0, 100) + "..." : "No description available"}
+                                    {job.job?.description
+                                        ? job.job.description.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                                        : "No description available"}
                                 </Typography>
                             </CardContent>
 
-                            {/* 🔹 Remove Button */}
+                            {/* 🔹 Remove + View Buttons */}
                             <CardActions className="card-actions">
                                 <Button size="small" startIcon={<DeleteIcon />} onClick={() => handleRemoveJob(job.id)}>
                                     Remove
@@ -141,7 +150,6 @@ const ProfileTalentSavedJobs = () => {
                                 <Button size="small" startIcon={<VisibilityIcon />} onClick={() => handleOpenJobPopup(job)}>
                                     View
                                 </Button>
-
                             </CardActions>
                         </Card>
                     ))}
@@ -159,15 +167,15 @@ const ProfileTalentSavedJobs = () => {
                     color="primary"
                 />
             </Box>
-            {/* ✅ First Popup: Job Details */}
+
+            {/* ✅ Popups */}
             <TalentProfileViewJobBeforeSubmitProposal
                 job={selectedJob}
                 open={openJobPopup}
                 onClose={handleCloseJobPopup}
-                onSendProposal={handleOpenProposalPopup} // ✅ Clicking "Submit Proposal" opens next popup
+                onSendProposal={handleOpenProposalPopup}
             />
 
-            {/* ✅ Second Popup: Proposal Submission */}
             <TalentProfileSendFinalSubmitProposal
                 job={selectedJob}
                 open={openProposalPopup}
@@ -175,6 +183,8 @@ const ProfileTalentSavedJobs = () => {
             />
         </Box>
     );
+
+
 };
 
 export default ProfileTalentSavedJobs;

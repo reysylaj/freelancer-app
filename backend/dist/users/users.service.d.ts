@@ -9,4 +9,5 @@ export declare class UsersService {
     create(user: Partial<User>): Promise<User>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User | null>;
+    updateUser(id: number, updateData: Partial<User>): Promise<User>;
 }

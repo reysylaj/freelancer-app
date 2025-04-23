@@ -2,42 +2,33 @@ import { useState, useEffect } from "react";
 import {
     Box,
     Typography,
-    List,
-    ListItem,
-    ListItemText,
-    Avatar,
     TextField,
     Button,
 } from "@mui/material";
 import "../styles/ProfileClientMessenger.css";
 import { getConversation, sendMessage } from "../services/messageService";
 import { useAuth } from "../context/AuthContext";
-
+import { useParams } from "react-router-dom";
 
 const ProfileClientMessenger = () => {
     const { authUser } = useAuth();
     const clientId = authUser?.id;
+    const { id: selectedTalentId } = useParams(); // ✅ from route /view-talent-profile/:id
 
-    const [conversations, setConversations] = useState([]);
-    const [selectedChat, setSelectedChat] = useState(null);
-    const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState("");
 
-    // 🔹 Fetch all conversations from backend (grouped per talent)
+    // ✅ Load messages when component mounts or when talent changes
     useEffect(() => {
-        if (selectedTalentId && clientId) {
-            loadMessages(clientId, selectedTalentId);
+        if (clientId && selectedTalentId) {
+            loadMessages();
         }
-    }, [selectedTalentId]);
+    }, [clientId, selectedTalentId]);
 
-    const loadMessages = async (clientId, talentId) => {
+    const loadMessages = async () => {
         try {
-            const data = await getConversation(clientId, talentId);
+            const data = await getConversation(clientId, selectedTalentId);
             setMessages(data);
-            setSelectedChat({
-                talentId,
-                talentAvatar: "/default-avatar.png", // You can pass real avatar if needed
-            });
         } catch (error) {
             console.error("❌ Failed to load messages:", error);
         }
@@ -58,7 +49,7 @@ const ProfileClientMessenger = () => {
         try {
             await sendMessage(messagePayload);
             setNewMessage("");
-            loadMessages(clientId, selectedTalentId);
+            await loadMessages();
         } catch (error) {
             console.error("❌ Failed to send message:", error);
         }
@@ -69,23 +60,30 @@ const ProfileClientMessenger = () => {
             <Typography variant="h4" className="messages-title">
                 Message Your Favourite Talent
             </Typography>
-            <Box className="messenger-box">
-                {/* You can build a sidebar later to show all talent chats */}
-                <Box className="chat-window">
-                    {selectedChat ? (
-                        <>
-                            <Typography variant="h6" className="chat-header">
-                                Chat with {selectedChat.talentName}
-                            </Typography>
 
-                            <Box className="message-box">
-                                {messages.map((msg, index) => (
-                                    <Box key={index} className={`message ${msg.sender}`}>
+            <Box className="chat-window">
+                {selectedTalentId ? (
+                    <>
+                        <Typography variant="h6" className="chat-header">
+                            Chat with Talent #{selectedTalentId}
+                        </Typography>
+
+                        <Box className="message-box">
+                            {messages.length > 0 ? (
+                                messages.map((msg, index) => (
+                                    <Box
+                                        key={index}
+                                        className={`message ${msg.sender === "client" ? "sent" : "received"}`}
+                                    >
                                         {msg.text}
                                     </Box>
-                                ))}
-                            </Box>
+                                ))
+                            ) : (
+                                <Typography className="no-messages">No messages yet.</Typography>
+                            )}
+                        </Box>
 
+                        <Box className="input-section">
                             <TextField
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
@@ -93,14 +91,14 @@ const ProfileClientMessenger = () => {
                                 placeholder="Type your message..."
                                 className="message-input"
                             />
-                            <Button onClick={handleSendMessage} className="send-button">
+                            <Button onClick={handleSendMessage} className="send-button" variant="contained" color="primary">
                                 Send
                             </Button>
-                        </>
-                    ) : (
-                        <Typography>Select a talent to start chatting</Typography>
-                    )}
-                </Box>
+                        </Box>
+                    </>
+                ) : (
+                    <Typography variant="body1">No talent selected.</Typography>
+                )}
             </Box>
         </Box>
     );
