@@ -10,4 +10,5 @@ export declare class Project {
     media: string;
     links: string[];
     createdAt: Date;
+    clientId: number;
 }

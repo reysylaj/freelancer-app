@@ -39,6 +39,19 @@ let ProposalsController = class ProposalsController {
     delete(id) {
         return this.proposalsService.delete(id);
     }
+    async getTalentsForClient(clientId) {
+        const proposals = await this.proposalsService.findByClient(clientId);
+        const uniqueTalentsMap = new Map();
+        for (const proposal of proposals) {
+            if (!uniqueTalentsMap.has(proposal.talentId)) {
+                uniqueTalentsMap.set(proposal.talentId, {
+                    talentId: proposal.talentId,
+                    name: proposal.talentName || `Talent #${proposal.talentId}`,
+                });
+            }
+        }
+        return Array.from(uniqueTalentsMap.values());
+    }
 };
 exports.ProposalsController = ProposalsController;
 __decorate([
@@ -90,6 +103,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProposalsController.prototype, "delete", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)('clients/:clientId/talents'),
+    __param(0, (0, common_1.Param)('clientId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], ProposalsController.prototype, "getTalentsForClient", null);
 exports.ProposalsController = ProposalsController = __decorate([
     (0, common_1.Controller)('proposals'),
     __metadata("design:paramtypes", [proposals_service_1.ProposalsService])

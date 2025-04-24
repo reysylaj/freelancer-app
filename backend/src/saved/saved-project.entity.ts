@@ -1,6 +1,7 @@
 // saved-project.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Project } from '../projects/projects.entity';
+import { User } from '../users/user.entity'; // ✅ Adjust path if needed
 
 @Entity()
 export class SavedProject {
@@ -19,4 +20,9 @@ export class SavedProject {
     @ManyToOne(() => Project, { eager: true }) // ✅ this ensures 'project' is loaded
     @JoinColumn({ name: 'projectId' })
     project?: Project;
+
+    @ManyToOne(() => User, { eager: true }) // 👈 this loads client info
+    @JoinColumn({ name: 'clientId' })
+    client?: User;
+
 }

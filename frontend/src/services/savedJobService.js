@@ -18,3 +18,5 @@ export const removeSavedJobFromBackend = async (id) => {
     const response = await API.delete(`/saved/job/${id}`, { withCredentials: true });
     return response.data;
 };
+
+

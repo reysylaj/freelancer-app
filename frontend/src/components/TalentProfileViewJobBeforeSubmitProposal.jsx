@@ -8,18 +8,19 @@ import {
 } from "@mui/material";
 
 const TalentProfileViewJobBeforeSubmitProposal = ({ job, open, onClose, onSendProposal }) => {
-    if (!job || !job.job) return null; // ✅ Check nested job
+    const realJob = job?.job || job;
+    if (!realJob) return null;
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle>{job.job.title || "Job Details"}</DialogTitle>
+            <DialogTitle>{realJob.title || "Job Details"}</DialogTitle>
             <DialogContent>
-                <Typography><strong>Company:</strong> {job.job.clientName || "N/A"}</Typography>
-                <Typography><strong>Description:</strong> {job.job.description || "No description provided"}</Typography>
-                <Typography><strong>Budget:</strong> 💰 {job.job.budget ? `${job.job.budget} ALL` : "Not specified"}</Typography>
-                <Typography><strong>Job Type:</strong> {job.job.jobType || "Not specified"}</Typography>
-                <Typography><strong>Seniority Level:</strong> {job.job.seniorityLevel || "Not specified"}</Typography>
-                <Typography><strong>Work Mode:</strong> {job.job.workMode || "Not specified"}</Typography>
+                <Typography><strong>Company:</strong> {realJob.clientName || "N/A"}</Typography>
+                <Typography><strong>Description:</strong> {realJob.description || "No description provided"}</Typography>
+                <Typography><strong>Budget:</strong> 💰 {realJob.budget ? `${realJob.budget} ALL` : "Not specified"}</Typography>
+                <Typography><strong>Job Type:</strong> {realJob.jobType || "Not specified"}</Typography>
+                <Typography><strong>Seniority Level:</strong> {realJob.seniorityLevel || "Not specified"}</Typography>
+                <Typography><strong>Work Mode:</strong> {realJob.workMode || "Not specified"}</Typography>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Close</Button>

@@ -13,4 +13,6 @@ export declare class Proposal {
     client: User;
     jobTitle: string;
     clientName: string;
+    talentName: string;
+    talentProfilePic: string;
 }

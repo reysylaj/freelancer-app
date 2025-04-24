@@ -14,8 +14,6 @@ import ProfileClientCreatePostPage from "./pages/ProfileClientCreatePostPage.jsx
 import ViewTalentPublicProfile from "./pages/ViewTalentPublicProfile.jsx"
 import ClientSideRegistration from "./pages/ClientSideRegistration";
 import TalentSideRegistration from "./pages/TalentSideRegistration";
-import { AuthProvider } from "./context/AuthContext.jsx";
-import ProtectedRoute from './utils/ProtectedRoute';
 
 import ProfileTalentMessenger from "./components/ProfileTalentMessenger.jsx";
 import ProfileClientMessenger from "./components/ProfileClientMessenger.jsx";

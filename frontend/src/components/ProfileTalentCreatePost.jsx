@@ -11,7 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import "../styles/ProfileTalentCreatePost.css";
 import { createProject } from "../services/projectService";
 import { useAuth } from "../context/AuthContext";
-
+ 
 const roles = ["Developer", "Designer", "Project Manager", "QA Engineer", "Data Scientist"];
 const tools = ["React", "Node.js", "Figma", "Python", "Docker", "Kubernetes", "Jira"];
 
@@ -26,6 +26,8 @@ const ProfileTalentCreatePost = ({ addPost }) => {
     const [selectedTools, setSelectedTools] = useState([]);
     const [media, setMedia] = useState(null);
     const [links, setLinks] = useState([""]);
+
+
 
     const handleClose = () => {
         setTitle(""); setDescription(""); setRole(""); setSelectedTools([]);
@@ -55,9 +57,8 @@ const ProfileTalentCreatePost = ({ addPost }) => {
         };
 
         try {
-            await createProject(post);
-            addPost(); // callback
-            window.dispatchEvent(new Event("projectUpdated"));
+            const saved = await createProject(post); // ✅ fixed here
+            addPost(saved); // ✅ pass the returned saved project
             handleClose();
         } catch (err) {
             console.error("❌ Failed to create project:", err);

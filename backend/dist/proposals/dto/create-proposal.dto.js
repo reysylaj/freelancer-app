@@ -38,6 +38,14 @@ __decorate([
 ], CreateProposalDto.prototype, "clientName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProposalDto.prototype, "talentName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProposalDto.prototype, "talentProfilePic", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateProposalDto.prototype, "message", void 0);

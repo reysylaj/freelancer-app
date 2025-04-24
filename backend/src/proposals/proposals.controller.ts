@@ -1,3 +1,4 @@
+//proposals.controller.ts
 import { Controller, Get, Post, Param, Body, Patch, Delete, UseGuards, Req } from '@nestjs/common';
 import { ProposalsService } from './proposals.service';
 import { CreateProposalDto } from './dto/create-proposal.dto';
@@ -46,4 +47,25 @@ export class ProposalsController {
     delete(@Param('id') id: number) {
         return this.proposalsService.delete(id);
     }
+
+    // ✅ ADD THIS: In proposals.controller.ts
+    @UseGuards(AuthGuard)
+    @Get('clients/:clientId/talents')
+    async getTalentsForClient(@Param('clientId') clientId: number) {
+        const proposals = await this.proposalsService.findByClient(clientId);
+
+        const uniqueTalentsMap = new Map<number, { talentId: number; name: string }>();
+        for (const proposal of proposals) {
+            if (!uniqueTalentsMap.has(proposal.talentId)) {
+                uniqueTalentsMap.set(proposal.talentId, {
+                    talentId: proposal.talentId,
+                    name: proposal.talentName || `Talent #${proposal.talentId}`,
+                });
+            }
+        }
+        return Array.from(uniqueTalentsMap.values());
+    }
+
+    
+
 }

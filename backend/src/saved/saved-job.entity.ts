@@ -1,3 +1,5 @@
+//saved/dto/save-job.entity.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Job } from '../jobs/jobs.entity';
 

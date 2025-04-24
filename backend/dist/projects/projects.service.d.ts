@@ -7,4 +7,6 @@ export declare class ProjectsService {
     findAll(): Promise<Project[]>;
     findByTalentId(talentId: number): Promise<Project[]>;
     delete(id: number): Promise<import("typeorm").DeleteResult>;
+    update(id: number, data: Partial<Project>, userId: number): Promise<Project>;
+    findOneById(id: number): Promise<Project>;
 }

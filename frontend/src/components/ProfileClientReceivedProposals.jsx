@@ -1,7 +1,8 @@
+// ProfileClientReceivedProposals.jsx
 import { useState, useEffect } from "react";
 import { Box, Typography, Card, CardContent, Avatar, Button, Pagination, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // ✅ new import
+import { useAuth } from "../context/AuthContext";
 import ClientProposalListPopup from "./ClientProposalListPopup";
 import { getProposalsByClient, updateProposalStatus as updateStatusBackend } from "../services/proposalService";
 import "../styles/ProfileClientReceivedProposals.css";
@@ -9,8 +10,8 @@ import "../styles/ProfileClientReceivedProposals.css";
 const ITEMS_PER_PAGE = 4;
 
 const ProfileClientReceivedProposals = () => {
-    const { authUser } = useAuth(); 
-    const clientId = authUser?.id; 
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
     const navigate = useNavigate();
 
     const [proposals, setProposals] = useState([]);
@@ -99,8 +100,8 @@ const ProfileClientReceivedProposals = () => {
                                     </Button>
                                     <Button
                                         size="small"
-                                        onClick={() => handleRemoveProject(saved.id)}
-                                    >
+                                        variant="outlined"
+                                        onClick={() => navigate(`/message-talent/${proposal.talentId}`)}>
                                         Message Talent
                                     </Button>
                                 </Stack>

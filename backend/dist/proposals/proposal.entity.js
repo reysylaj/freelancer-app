@@ -66,6 +66,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Proposal.prototype, "clientName", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Proposal.prototype, "talentName", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Proposal.prototype, "talentProfilePic", void 0);
 exports.Proposal = Proposal = __decorate([
     (0, typeorm_1.Entity)('proposals')
 ], Proposal);

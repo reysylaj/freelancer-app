@@ -7,7 +7,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClientProfileViewProjectBeforeContact from "./ClientProfileViewProjectBeforeContact";
 import { getSavedProjects, removeSavedProjectFromBackend } from "../services/savedProjectService"; // ✅ NEW
+import { getProposalsByClient } from "../services/proposalService";
 import "../styles/ProfileClientSavedPostsTalents.css";
+
+//message purpose
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 
 const ITEMS_PER_PAGE = 4;
 
@@ -17,6 +23,10 @@ const ProfileClientSavedPostsTalents = () => {
     const [paginatedProjects, setPaginatedProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
+    const { authUser } = useAuth();
+    const clientId = authUser?.id;
+    const navigate = useNavigate();
+    const [proposals, setProposals] = useState([]);
 
     useEffect(() => {
         const fetchSaved = async () => {
@@ -45,6 +55,29 @@ const ProfileClientSavedPostsTalents = () => {
             console.error("❌ Failed to remove saved project:", err);
         }
     };
+
+    const updatePaginated = (data, page) => {
+        const start = (page - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        setPaginatedProjects(data.slice(start, end));
+        setCurrentPage(page);
+    };
+
+
+    useEffect(() => {
+        const loadProposals = async () => {
+            try {
+                if (!clientId) return;
+                const clientProposals = await getProposalsByClient(clientId);
+                setProposals(clientProposals);
+                updatePaginated(clientProposals, 1);
+            } catch (error) {
+                console.error("Failed to fetch proposals:", error);
+            }
+        };
+
+        loadProposals();
+    }, [clientId]);
 
     const handlePageChange = (event, value) => {
         const start = (value - 1) * ITEMS_PER_PAGE;
@@ -94,8 +127,8 @@ const ProfileClientSavedPostsTalents = () => {
                                         </Button>
                                         <Button
                                             size="small"
-                                            onClick={() => handleRemoveProject(saved.id)}
-                                        >
+                                            variant="outlined"
+                                            onClick={() => navigate(`/message-client/${saved.client.id}`)}>
                                             Message Talent
                                         </Button>
                                     </Box>

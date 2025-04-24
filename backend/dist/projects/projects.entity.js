@@ -58,6 +58,10 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], Project.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Project.prototype, "clientId", void 0);
 exports.Project = Project = __decorate([
     (0, typeorm_1.Entity)('projects')
 ], Project);

@@ -1,0 +1,37 @@
+.chat-sidebar {
+    background: #222;
+    color: white;
+    width: 30%;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100%;
+    border-right: 2px solid #444;
+}
+
+.chat-sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    background: #e0e0e0;
+    color: #222;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.client-entry {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background: #2c2c2c;
+    cursor: pointer;
+}
+
+.client-entry.selected {
+    background: #555;
+}
+
+.client-entry:hover {
+    background: #444;
+}

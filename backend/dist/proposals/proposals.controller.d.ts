@@ -10,4 +10,8 @@ export declare class ProposalsController {
     findByTalent(talentId: number): Promise<import("./proposal.entity").Proposal[]>;
     updateStatus(id: number, status: string): Promise<import("typeorm").UpdateResult>;
     delete(id: number): Promise<import("typeorm").DeleteResult>;
+    getTalentsForClient(clientId: number): Promise<{
+        talentId: number;
+        name: string;
+    }[]>;
 }

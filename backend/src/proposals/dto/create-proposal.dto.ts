@@ -1,3 +1,5 @@
+//dto/create-proposal.dto.ts
+
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreateProposalDto {
@@ -17,6 +19,12 @@ export class CreateProposalDto {
     @IsString()
     @IsNotEmpty()
     clientName!: string;
+
+    @IsString()
+    talentName!: string;
+
+    @IsString()
+    talentProfilePic!: string;
 
     @IsString()
     @IsNotEmpty()

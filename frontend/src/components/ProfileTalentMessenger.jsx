@@ -3,7 +3,8 @@ import {
     Box,
     Typography,
     TextField,
-    Button
+    Button,
+    Avatar
 } from "@mui/material";
 import "../styles/ProfileTalentMessenger.css";
 import { getConversation, sendMessage } from "../services/messageService";
@@ -13,89 +14,108 @@ import { useParams } from "react-router-dom";
 const ProfileTalentMessenger = () => {
     const { authUser } = useAuth();
     const talentId = authUser?.id;
+    const { id: selectedClientId } = useParams(); // 🟠 comes from /message-client/:id
 
-    const { id: selectedClientId } = useParams(); // ✅ Grab from route
-    const [selectedChat, setSelectedChat] = useState(null);
-    const [newMessage, setNewMessage] = useState("");
+    const [clients, setClients] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState("");
 
+    // 👇 Add client to sidebar and load messages
     useEffect(() => {
-        if (selectedClientId && talentId) {
-            loadMessages(talentId, selectedClientId);
-        }
-    }, [selectedClientId, talentId]);
+        const initChat = async () => {
+            if (!talentId || !selectedClientId) return;
 
-    const loadMessages = async (talentId, clientId) => {
-        try {
-            const data = await getConversation(clientId, talentId);
-            setMessages(data);
-            setSelectedChat({
-                clientId,
-                clientName: `Client #${clientId}`,
-                clientAvatar: "/default-avatar.png",
+            const clientIdNum = parseInt(selectedClientId);
+            const chatClient = {
+                clientId: clientIdNum,
+                name: `Client #${clientIdNum}`,
+            };
+
+            setClients((prev) => {
+                const exists = prev.find(c => c.clientId === clientIdNum);
+                return exists ? prev : [...prev, chatClient];
             });
-        } catch (error) {
-            console.error("❌ Failed to load messages:", error);
-        }
-    };
+
+            try {
+                const msgs = await getConversation(clientIdNum, talentId);
+                setMessages(msgs);
+            } catch (err) {
+                console.error("❌ Failed to load messages:", err);
+            }
+        };
+
+        initChat();
+    }, [selectedClientId, talentId]);
 
     const handleSendMessage = async () => {
         if (!newMessage.trim()) return;
 
         const messagePayload = {
             talentId,
-            clientId: selectedChat.clientId,
+            clientId: parseInt(selectedClientId),
             sender: "talent",
-            senderId: talentId,
-            receiverId: selectedChat.clientId,
             text: newMessage,
         };
 
         try {
             await sendMessage(messagePayload);
             setNewMessage("");
-            loadMessages(talentId, selectedChat.clientId);
-        } catch (error) {
-            console.error("❌ Failed to send message:", error);
+            const updated = await getConversation(parseInt(selectedClientId), talentId);
+            setMessages(updated);
+        } catch (err) {
+            console.error("❌ Failed to send message:", err);
         }
     };
 
     return (
-        <Box className="messenger-container">
-            <Typography variant="h4" className="messages-title">
-                Message Your Favourite Client
-            </Typography>
-            <Box className="messenger-box">
-                <Box className="chat-window">
-                    {selectedChat ? (
-                        <>
-                            <Typography variant="h6" className="chat-header">
-                                Chat with {selectedChat.clientName}
-                            </Typography>
+        <Box className="messenger-wrapper">
+            {/* LEFT: Sidebar with Client */}
+            <Box className="chat-sidebar">
+                <Typography className="chat-sidebar-title">Clients</Typography>
+                {clients.length === 0 ? (
+                    <Typography className="chat-placeholder">Message a client to start chatting.</Typography>
+                ) : (
+                    clients.map(client => (
+                        <Box key={client.clientId} className="chat-client">
+                            <Avatar src="/default-avatar.png" sx={{ width: 32, height: 32, mr: 1 }} />
+                            <Typography>{client.name}</Typography>
+                        </Box>
+                    ))
+                )}
+            </Box>
 
-                            <Box className="message-box">
-                                {messages.map((msg, index) => (
-                                    <Box key={index} className={`message ${msg.sender}`}>
-                                        {msg.text}
-                                    </Box>
-                                ))}
-                            </Box>
+            {/* RIGHT: Chat Window */}
+            <Box className="chat-window">
+                <Typography className="chat-title">Chat with Client #{selectedClientId}</Typography>
 
-                            <TextField
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                                fullWidth
-                                placeholder="Type your message..."
-                                className="message-input"
-                            />
-                            <Button onClick={handleSendMessage} className="send-button">
-                                Send
-                            </Button>
-                        </>
+                <Box className="message-box">
+                    {messages.length === 0 ? (
+                        <Typography className="chat-placeholder">Start the conversation.</Typography>
                     ) : (
-                        <Typography>Select a client to start chatting</Typography>
+                        messages.map((msg, i) => (
+                            <Box key={i} className={`message ${msg.sender}`}>
+                                {msg.text}
+                            </Box>
+                        ))
                     )}
                 </Box>
+
+                {/* Message input */}
+                <TextField
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    fullWidth
+                    placeholder="Type a message..."
+                    className="message-input"
+                />
+                <Button
+                    onClick={handleSendMessage}
+                    className="send-button"
+                    variant="contained"
+                    color="primary"
+                >
+                    Send
+                </Button>
             </Box>
         </Box>
     );

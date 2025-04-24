@@ -16,9 +16,10 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
     const [coverLetter, setCoverLetter] = useState("");
     const [file, setFile] = useState(null);
 
-    if (!job || !job.job || !authUser) return null;
+    if (!job || !authUser) return null;
+    const realJob = job.job || job;
 
-    const realJob = job.job;
+
 
     const handleFileUpload = (event) => {
         setFile(event.target.files[0]);
@@ -33,13 +34,15 @@ const TalentProfileSendFinalSubmitProposal = ({ job, open, onClose }) => {
             clientId: realJob.clientId,
             clientName: realJob.clientName || "Unknown Client",
             talentId: authUser.id,
-            talentName: authUser.name,
-            talentProfilePic: authUser.profilePicture,
-            message: coverLetter,
+            talentName: authUser.name || "Unknown Talent",            // ✅ FIX
+            talentProfilePic: authUser.profilePicture || "",          // ✅ FIX
+            message: coverLetter.slice(0, 100),                       // ✅ NEW: short summary
+            coverLetter: coverLetter,                                // ✅ NEW: full letter
             status: "Pending",
         };
-
         try {
+            console.log("📤 Submitting proposal:", newProposal); // 👈 Add this
+
             await createProposal(newProposal);
             alert("✅ Proposal submitted successfully!");
             setCoverLetter("");

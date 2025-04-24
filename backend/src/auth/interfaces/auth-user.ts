@@ -1,4 +1,4 @@
-// A simple type that describes the decoded user from JWT
+//auth/interfaces/auth-user.ts
 export type AuthUser = {
     id: number;
     email?: string;

@@ -4,6 +4,8 @@ export declare class CreateProposalDto {
     clientId: number;
     jobTitle: string;
     clientName: string;
+    talentName: string;
+    talentProfilePic: string;
     message: string;
     coverLetter: string;
     status: string;

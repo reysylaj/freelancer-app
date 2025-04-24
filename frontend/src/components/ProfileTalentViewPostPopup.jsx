@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Select,
+    Dialog, DialogTitle, DialogContent, DialogActions,
+    Button, TextField, MenuItem, Select,
     FormControl, InputLabel, Chip, Typography, Box, IconButton
 } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
@@ -8,6 +9,8 @@ import AddLinkIcon from "@mui/icons-material/AddLink";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
+import { updateProject, deleteProject } from "../services/projectService";
 
 const roles = ["Developer", "Designer", "Project Manager", "QA Engineer", "Data Scientist"];
 const tools = ["React", "Node.js", "Figma", "Python", "Docker", "Kubernetes", "Jira"];
@@ -20,7 +23,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
     const [media, setMedia] = useState(null);
     const [links, setLinks] = useState([""]);
 
-    // ✅ Load post data when popup opens
     useEffect(() => {
         if (post) {
             setTitle(post.title || "");
@@ -34,7 +36,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
 
     if (!post) return null;
 
-    // ✅ Handle File Upload
     const handleMediaUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -44,7 +45,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
         }
     };
 
-    // ✅ Handle Links Input
     const handleLinkChange = (index, value) => {
         const updatedLinks = [...links];
         updatedLinks[index] = value;
@@ -53,42 +53,37 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
 
     const addNewLink = () => setLinks([...links, ""]);
 
-    // ✅ Save Changes
-    const handleSaveChanges = () => {
+    const handleSaveChanges = async () => {
         const updatedPost = {
-            ...post,
             title,
             description,
             role,
             tools: selectedTools,
             media,
-            links: links.filter(link => link.trim() !== ""),
+            links: links.filter(link => link.trim() !== "")
         };
 
-        existingProjects = existingProjects.map(p => (p.id === post.id ? updatedPost : p));
-
-        publicProjects = publicProjects.map(p => (p.id === post.id ? updatedPost : p));
-
-        // ✅ Update state in parent component
-        onUpdate(updatedPost);
-
-        // ✅ Close the popup and refresh the page
-        window.dispatchEvent(new Event("projectUpdated"));
-        onClose();
+        try {
+            const savedProject = await updateProject(post.id, updatedPost);
+            onUpdate(savedProject);
+            window.dispatchEvent(new Event("projectUpdated"));
+            onClose();
+        } catch (err) {
+            console.error("❌ Failed to update project:", err);
+            alert("Failed to save changes.");
+        }
     };
 
-    // ✅ Delete Post
-    const handleDeletePost = () => {
-        existingProjects = existingProjects.filter(p => p.id !== post.id);
-
-        publicProjects = publicProjects.filter(p => p.id !== post.id);
-
-        // ✅ Remove from UI
-        onDelete(post.id);
-
-        // ✅ Close the popup and refresh the page
-        window.dispatchEvent(new Event("projectUpdated"));
-        onClose();
+    const handleDeletePost = async () => {
+        try {
+            await deleteProject(post.id);
+            onDelete(post.id);
+            window.dispatchEvent(new Event("projectUpdated"));
+            onClose();
+        } catch (err) {
+            console.error("❌ Failed to delete project:", err);
+            alert("Failed to delete project.");
+        }
     };
 
     return (
@@ -101,7 +96,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
             </DialogTitle>
 
             <DialogContent>
-                {/* 🔹 Project Title */}
                 <TextField
                     fullWidth
                     label="Project Title"
@@ -111,14 +105,12 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
                     sx={{ mb: 2 }}
                 />
 
-                {/* 🔹 Project Description */}
                 <ReactQuill
                     value={description}
                     onChange={setDescription}
                     placeholder="Project Description..."
                 />
 
-                {/* 🔹 Role Selection */}
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel>Role in Project</InputLabel>
                     <Select value={role} onChange={(e) => setRole(e.target.value)} required>
@@ -126,7 +118,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
                     </Select>
                 </FormControl>
 
-                {/* 🔹 Tools Used */}
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel>Tools Used</InputLabel>
                     <Select
@@ -143,7 +134,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
                     </Select>
                 </FormControl>
 
-                {/* 🔹 Project Links */}
                 <Typography sx={{ mt: 2 }}>Project Links:</Typography>
                 {links.map((link, index) => (
                     <TextField
@@ -157,7 +147,6 @@ const ProfileTalentViewPostPopup = ({ post, open, onClose, onUpdate, onDelete })
                 ))}
                 <Button startIcon={<AddLinkIcon />} onClick={addNewLink} sx={{ mt: 1 }}>Add another link</Button>
 
-                {/* 🔹 Attach Media */}
                 <Typography sx={{ mt: 2 }}>Attach Media:</Typography>
                 <Button component="label" startIcon={<ImageIcon />} sx={{ mt: 1 }}>
                     Upload Image/Video

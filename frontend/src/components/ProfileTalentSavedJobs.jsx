@@ -9,6 +9,7 @@ import TalentProfileViewJobBeforeSubmitProposal from "../components/TalentProfil
 import TalentProfileSendFinalSubmitProposal from "../components/TalentProfileSendFinalSubmitProposal"; // ✅ Second Popup
 import { getSavedJobs, removeSavedJobFromBackend } from "../services/savedJobService";
 import { useAuth } from "../context/AuthContext"; // ✅ add this if missing
+import { useNavigate } from "react-router-dom";
 
 import "../styles/ProfileTalentSavedJobs.css";
 
@@ -27,6 +28,9 @@ const ProfileTalentSavedJobs = () => {
     const [openJobPopup, setOpenJobPopup] = useState(false);
     const [openProposalPopup, setOpenProposalPopup] = useState(false);
 
+
+    //message purpose
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSaved = async () => {
@@ -150,6 +154,10 @@ const ProfileTalentSavedJobs = () => {
                                 <Button size="small" startIcon={<VisibilityIcon />} onClick={() => handleOpenJobPopup(job)}>
                                     View
                                 </Button>
+                                <CardActions>
+                                    <Button onClick={() => navigate(`/message-client/${job.job.clientId}`)}>Message the Client</Button>
+
+                                </CardActions>
                             </CardActions>
                         </Card>
                     ))}

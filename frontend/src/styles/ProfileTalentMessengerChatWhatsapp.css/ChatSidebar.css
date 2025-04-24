@@ -1,0 +1,45 @@
+.chat-sidebar {
+    width: 30%;
+    background-color: #1e1e1e;
+    color: white;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-weight: bold;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.client-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #2e2e2e;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.client-item:hover {
+    background-color: #3e3e3e;
+}
+
+.client-item.active {
+    background-color: #007bff;
+}
+
+.client-name {
+    margin-left: 12px;
+}
+
+.no-clients {
+    color: gray;
+    font-style: italic;
+    text-align: center;
+    margin-top: 40px;
+}

@@ -34,6 +34,24 @@ let ProjectsService = class ProjectsService {
     delete(id) {
         return this.repo.delete(id);
     }
+    async update(id, data, userId) {
+        const project = await this.repo.findOneBy({ id });
+        if (!project) {
+            throw new common_1.NotFoundException('Project not found');
+        }
+        if (project.talentId !== userId) {
+            throw new common_1.UnauthorizedException('Not your project');
+        }
+        Object.assign(project, data);
+        return this.repo.save(project);
+    }
+    async findOneById(id) {
+        const project = await this.repo.findOneBy({ id });
+        if (!project) {
+            throw new common_1.NotFoundException('Project not found');
+        }
+        return project;
+    }
 };
 exports.ProjectsService = ProjectsService;
 exports.ProjectsService = ProjectsService = __decorate([

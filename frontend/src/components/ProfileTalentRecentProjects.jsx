@@ -43,22 +43,42 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
         updatePage(1, filtered);
     };
 
+
+    const handleUpdateProject = (updatedPost) => {
+        setProjects(prev =>
+            prev.map(p => (p.id === updatedPost.id ? updatedPost : p))
+        );
+        applyFilters(
+            projects.map(p => (p.id === updatedPost.id ? updatedPost : p))
+        );
+    };
+
+    const handleDeleteProject = (id) => {
+        const filtered = projects.filter(p => p.id !== id);
+        setProjects(filtered);
+        applyFilters(filtered);
+    };
+
+
     useEffect(() => {
-        const load = async () => {
-            if (posts) {
-                applyFilters(posts);
-            } else {
-                try {
-                    const data = await getProjectsByTalentId(talentId);
+        const loadProjects = async () => {
+            try {
+                if (Array.isArray(posts) && posts.length > 0) {
+                    applyFilters(posts); // 🟢 use passed posts
+                } else {
+                    const data = await getProjectsByTalentId(talentId); // 🧠 fallback to backend
                     applyFilters(data);
-                } catch (err) {
-                    console.error("❌ Failed loading recent projects:", err);
                 }
+            } catch (err) {
+                console.error("❌ Failed loading recent projects:", err);
             }
         };
 
-        load();
+        loadProjects();
     }, [posts, talentId]);
+
+
+
 
     useEffect(() => {
         applyFilters(projects); // Reapply sort + search to existing list
@@ -103,6 +123,7 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
                         <CardActions>
                             <Button onClick={() => { setSelectedProject(post); setOpenPopup(true); }}>View</Button>
                         </CardActions>
+                        
                     </Card>
                 ))
             )}
@@ -117,6 +138,8 @@ const ProfileTalentRecentProjects = ({ posts = null }) => {
                 post={selectedProject}
                 open={openPopup}
                 onClose={() => setOpenPopup(false)}
+                onUpdate={handleUpdateProject}       // ✅ NEW
+                onDelete={handleDeleteProject}       // ✅ NEW
             />
         </Box>
     );

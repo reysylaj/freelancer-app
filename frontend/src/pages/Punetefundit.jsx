@@ -76,9 +76,9 @@ const Punetefundit = () => {
     setSelectedJob(null);
   };
 
-  const handleOpenProposalPopup = (job) => {
-    setSelectedJob(job);
-    setOpenProposalPopup(true);
+  const handleOpenProposalPopup = () => {
+    setOpenJobPopup(false);      // Close the view popup
+    setOpenProposalPopup(true);  // Open the proposal form
   };
 
   const handleCloseProposalPopup = () => {
@@ -93,7 +93,7 @@ const Punetefundit = () => {
         await removeSavedJobFromBackend(alreadySaved.id);
         setSavedJobs(savedJobs.filter(j => j.jobId !== job.id));
       } else {
-        const newSaved = await saveJobToBackend({ jobId: job.id, talentId });
+        const newSaved = await saveJobToBackend({ jobId: job.id }); // ✅ Only jobId
         setSavedJobs([...savedJobs, newSaved]);
       }
       window.dispatchEvent(new Event("savedJobsUpdated"));

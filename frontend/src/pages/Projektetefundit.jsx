@@ -30,7 +30,7 @@ const Projektetefundit = () => {
     const [popup, setPopup] = useState(null);
     const { authUser } = useAuth();
 
-    // 🔄 Load all projects
+    // 🔄 Load all projects + listen to "projectUpdated"
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -42,7 +42,12 @@ const Projektetefundit = () => {
             }
         };
         fetch();
+
+        // 👂 Listen for updates
+        window.addEventListener("projectUpdated", fetch);
+        return () => window.removeEventListener("projectUpdated", fetch);
     }, []);
+
 
     // 🔄 Load saved projects for current client
     useEffect(() => {

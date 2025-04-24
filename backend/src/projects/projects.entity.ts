@@ -35,4 +35,9 @@ export class Project {
 
     @CreateDateColumn()
     createdAt!: Date;
+
+    //message purpose
+    @Column()
+    clientId!: number;
+
 }

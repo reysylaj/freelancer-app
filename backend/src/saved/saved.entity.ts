@@ -1,3 +1,4 @@
+// saved.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Job } from '../jobs/jobs.entity';
 import { Project } from '../projects/projects.entity';

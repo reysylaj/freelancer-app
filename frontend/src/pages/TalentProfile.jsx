@@ -9,15 +9,16 @@ import ProfileTalentSavedJobs from "../components/ProfileTalentSavedJobs";
 import ProfileTalentMessenger from "../components/ProfileTalentMessenger";
 import ProfileTalentTotalProposalsSent from "../components/ProfileTalentTotalProposalsSent";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer"; 
 import "../styles/TalentProfile.css";
 import { useAuth } from "../context/AuthContext"; // ✅
 
 const TalentProfile = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [recentProjects, setRecentProjects] = useState([]);
     const { authUser, loading } = useAuth(); // ✅
+    const [refreshProjects, setRefreshProjects] = useState(false);
+    const [recentProjects, setRecentProjects] = useState([]);
 
     useEffect(() => {
         if (!loading && !authUser) {
@@ -31,9 +32,10 @@ const TalentProfile = () => {
         return <Typography variant="h4">Unauthorized or profile not found</Typography>;
     }
 
-    const addPost = () => {
-        window.dispatchEvent(new Event("projectUpdated"));
-    }; 
+    const addPost = (newProject) => {
+        setRecentProjects(prev => [newProject, ...prev]); // push new project at the top
+    };
+
 
     return (
         <>

@@ -1,4 +1,4 @@
-// ✅ proposals.entity.ts
+// proposals.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Job } from '../jobs/jobs.entity';
 import { User } from '../users/user.entity';
@@ -43,4 +43,11 @@ export class Proposal {
 
     @Column()
     clientName!: string;
+
+    //message purpose
+    @Column()
+    talentName!: string;
+
+    @Column()
+    talentProfilePic!: string;
 }
